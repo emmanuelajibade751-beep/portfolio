@@ -85,8 +85,6 @@
     });
     const ctx = surface.ctx;
 
-    // Near-twin of VoronoiScrub's render() (same lerp-scale-draw pipeline,
-    // different driver) — if you fix a drawing bug here, check there too.
     function render() {
       if (vw === 0 || vh === 0) return; // no surface to draw on
       // Clamp just below STEPS: at relax === STEPS exactly, floor(f) would

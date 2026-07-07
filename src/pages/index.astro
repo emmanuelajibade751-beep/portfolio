@@ -3,7 +3,6 @@ import "../styles/global.css";
 import DotGridHero from "../components/DotGridHero.astro";
 import SvgMorphMotif from "../components/SvgMorphMotif.astro";
 import FlowField from "../components/FlowField.astro";
-import VoronoiScrub from "../components/VoronoiScrub.astro";
 import ParametricPlayground from "../components/ParametricPlayground.astro";
 ---
 
@@ -53,10 +52,7 @@ import ParametricPlayground from "../components/ParametricPlayground.astro";
 		<!-- I4: simplex-noise flow field -->
 		<FlowField />
 
-		<!-- I1: scroll-scrubbed Lloyd-relaxation timeline (pinned section) -->
-		<VoronoiScrub />
-
-		<!-- I7: the same solver, driven by visitor-facing sliders -->
+		<!-- I7: Lloyd-relaxation Voronoi field, driven by visitor-facing sliders -->
 		<ParametricPlayground />
 
 		<script>

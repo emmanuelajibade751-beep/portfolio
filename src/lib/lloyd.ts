@@ -1,10 +1,10 @@
 /**
- * Shared Lloyd-relaxation solver.
+ * Lloyd-relaxation solver.
  *
- * One generative "definition", multiple consumers: VoronoiScrub binds its
- * timeline to scroll position (I1), ParametricPlayground binds it to visitor
- * -facing sliders (I7). Both scrub the same snapshot structure — which is
- * the point: the parametric model is independent of what drives it.
+ * Consumed by ParametricPlayground, which binds the relaxation timeline to
+ * visitor-facing sliders (I7). The snapshot structure is driver-agnostic —
+ * scroll, sliders, or anything else can scrub it, which is the point: the
+ * parametric model is independent of what drives it.
  */
 
 import { Delaunay } from "d3-delaunay";

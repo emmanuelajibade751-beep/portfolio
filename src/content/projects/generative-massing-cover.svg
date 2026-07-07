@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" role="img" aria-label="Placeholder cover: generative massing iteration study">
+  <rect width="1200" height="800" fill="#fbfaf8"/>
+  <!-- three massing iterations, left to right, refining -->
+  <g fill="none" stroke="#1a1917" stroke-width="2" opacity="0.7">
+    <!-- iteration 1: loose stack -->
+    <path d="M140 620 L260 620 L260 520 L140 520 Z"/>
+    <path d="M160 520 L280 520 L280 430 L160 430 Z"/>
+    <path d="M130 430 L230 430 L230 350 L130 350 Z"/>
+    <!-- iteration 2: mid -->
+    <path d="M480 620 L620 620 L620 500 L480 500 Z"/>
+    <path d="M500 500 L610 500 L610 400 L500 400 Z"/>
+    <path d="M520 400 L640 400 L640 320 L520 320 Z"/>
+    <path d="M490 320 L570 320 L570 260 L490 260 Z"/>
+  </g>
+  <g fill="none" stroke="#1a1917" stroke-width="2.5">
+    <!-- iteration 3: resolved, emphasized -->
+    <path d="M840 620 L1000 620 L1000 480 L840 480 Z"/>
+    <path d="M860 480 L1010 480 L1010 380 L860 380 Z"/>
+    <path d="M880 380 L990 380 L990 290 L880 290 Z"/>
+    <path d="M850 290 L950 290 L950 210 L850 210 Z"/>
+  </g>
+  <!-- iteration arrows -->
+  <g stroke="#d4623a" stroke-width="2.5" fill="none">
+    <path d="M310 470 L440 470"/>
+    <path d="M425 460 L440 470 L425 480"/>
+    <path d="M670 470 L800 470"/>
+    <path d="M785 460 L800 470 L785 480"/>
+  </g>
+  <!-- fitness ticks under resolved option -->
+  <g fill="#d4623a">
+    <rect x="845" y="660" width="34" height="7"/>
+    <rect x="887" y="660" width="34" height="7" opacity="0.7"/>
+    <rect x="929" y="660" width="34" height="7" opacity="0.45"/>
+  </g>
+  <text x="140" y="740" font-family="Consolas, monospace" font-size="26" fill="#a84a28" letter-spacing="6">PLACEHOLDER — REPLACE WITH YOUR IMAGE</text>
+</svg>

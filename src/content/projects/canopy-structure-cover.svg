@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" role="img" aria-label="Placeholder cover: radial canopy structure study">
+  <rect width="1200" height="800" fill="#fbfaf8"/>
+  <!-- radial rib fan from a ground node -->
+  <g fill="none" stroke="#1a1917" stroke-width="2" opacity="0.75">
+    <path d="M600 700 Q 480 420 180 300"/>
+    <path d="M600 700 Q 510 400 300 220"/>
+    <path d="M600 700 Q 550 390 450 170"/>
+    <path d="M600 700 Q 600 380 600 150"/>
+    <path d="M600 700 Q 650 390 750 170"/>
+    <path d="M600 700 Q 690 400 900 220"/>
+    <path d="M600 700 Q 720 420 1020 300"/>
+  </g>
+  <!-- tension rings -->
+  <g fill="none" stroke="#d4623a" stroke-width="2">
+    <path d="M280 355 Q 600 260 920 355" opacity="0.85"/>
+    <path d="M370 470 Q 600 385 830 470" opacity="0.55"/>
+    <path d="M460 580 Q 600 515 740 580" opacity="0.35"/>
+  </g>
+  <!-- ground node -->
+  <circle cx="600" cy="700" r="9" fill="#d4623a"/>
+  <!-- apex nodes -->
+  <g fill="#1a1917">
+    <circle cx="180" cy="300" r="5"/><circle cx="300" cy="220" r="5"/>
+    <circle cx="450" cy="170" r="5"/><circle cx="600" cy="150" r="5"/>
+    <circle cx="750" cy="170" r="5"/><circle cx="900" cy="220" r="5"/>
+    <circle cx="1020" cy="300" r="5"/>
+  </g>
+  <text x="150" y="760" font-family="Consolas, monospace" font-size="26" fill="#a84a28" letter-spacing="6">PLACEHOLDER — REPLACE WITH YOUR IMAGE</text>
+</svg>

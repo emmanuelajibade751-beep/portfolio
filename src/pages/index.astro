@@ -4,6 +4,7 @@ import DotGridHero from "../components/DotGridHero.astro";
 import SvgMorphMotif from "../components/SvgMorphMotif.astro";
 import FlowField from "../components/FlowField.astro";
 import ParametricPlayground from "../components/ParametricPlayground.astro";
+import WorkCatalogue from "../components/WorkCatalogue.astro";
 ---
 
 <html lang="en">
@@ -18,6 +19,10 @@ import ParametricPlayground from "../components/ParametricPlayground.astro";
 	<body>
 		<!-- Cursor-reactive dot grid -->
 		<DotGridHero />
+
+		<!-- The portfolio itself: content-collection driven catalogue.
+		     Placed directly after the hero — work first, garnish after. -->
+		<WorkCatalogue />
 
 		<!-- Self-drawing wireframe that morphs between parametric forms -->
 		<SvgMorphMotif />

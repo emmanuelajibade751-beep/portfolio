@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" role="img" aria-label="Placeholder cover: parametric facade panel study">
+  <rect width="1200" height="800" fill="#fbfaf8"/>
+  <!-- attractor-rotated panel grid: rotation grows with distance from top-left -->
+  <g fill="none" stroke="#1a1917" stroke-width="2" opacity="0.75">
+    <g transform="translate(150,140)"><rect width="70" height="70" transform="rotate(2 35 35)"/></g>
+    <g transform="translate(290,140)"><rect width="70" height="70" transform="rotate(6 35 35)"/></g>
+    <g transform="translate(430,140)"><rect width="70" height="70" transform="rotate(12 35 35)"/></g>
+    <g transform="translate(570,140)"><rect width="70" height="70" transform="rotate(20 35 35)"/></g>
+    <g transform="translate(710,140)"><rect width="70" height="70" transform="rotate(30 35 35)"/></g>
+    <g transform="translate(850,140)"><rect width="70" height="70" transform="rotate(42 35 35)"/></g>
+    <g transform="translate(150,280)"><rect width="70" height="70" transform="rotate(5 35 35)"/></g>
+    <g transform="translate(290,280)"><rect width="70" height="70" transform="rotate(10 35 35)"/></g>
+    <g transform="translate(430,280)"><rect width="70" height="70" transform="rotate(18 35 35)"/></g>
+    <g transform="translate(570,280)"><rect width="70" height="70" transform="rotate(28 35 35)"/></g>
+    <g transform="translate(710,280)"><rect width="70" height="70" transform="rotate(40 35 35)"/></g>
+    <g transform="translate(850,280)"><rect width="70" height="70" transform="rotate(54 35 35)"/></g>
+    <g transform="translate(150,420)"><rect width="70" height="70" transform="rotate(9 35 35)"/></g>
+    <g transform="translate(290,420)"><rect width="70" height="70" transform="rotate(16 35 35)"/></g>
+    <g transform="translate(430,420)"><rect width="70" height="70" transform="rotate(26 35 35)"/></g>
+    <g transform="translate(570,420)"><rect width="70" height="70" transform="rotate(38 35 35)"/></g>
+    <g transform="translate(710,420)"><rect width="70" height="70" transform="rotate(52 35 35)"/></g>
+    <g transform="translate(850,420)"><rect width="70" height="70" transform="rotate(68 35 35)"/></g>
+  </g>
+  <!-- attractor point -->
+  <circle cx="1010" cy="580" r="10" fill="#d4623a"/>
+  <circle cx="1010" cy="580" r="34" fill="none" stroke="#d4623a" stroke-width="2" opacity="0.5"/>
+  <circle cx="1010" cy="580" r="62" fill="none" stroke="#d4623a" stroke-width="2" opacity="0.25"/>
+  <text x="150" y="680" font-family="Consolas, monospace" font-size="26" fill="#a84a28" letter-spacing="6">PLACEHOLDER — REPLACE WITH YOUR IMAGE</text>
+</svg>

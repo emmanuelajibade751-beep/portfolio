@@ -21,10 +21,24 @@
 }
 
 :root {
-  --color-bg: #0a0a0c;
-  --color-fg: #e8e6e0;
+  /* Light professional theme: dominant warm white, near-black ink for
+     structure, the house orange kept strictly as accent. */
+  --color-bg: #fbfaf8;
+  --color-fg: #1a1917;
   --color-accent: #d4623a;
-  --color-grid-line: rgba(232, 230, 224, 0.08);
+  /* Darkened accent for SMALL text on the light bg — #d4623a itself is
+     ~3.3:1 against the bg (fine for graphics/large type, fails body-size
+     WCAG); this variant clears 4.5:1. */
+  --color-accent-deep: #a84a28;
+  --color-grid-line: rgba(26, 25, 23, 0.1);
+  /* Muted ink for captions/secondary text — keeps ≥4.5:1 on the bg. */
+  --color-ink-soft: rgba(26, 25, 23, 0.66);
+
+  /* Technical monospace accent (eyebrows, labels, UI chrome): delivers the
+     archi-tech "terminal/pixel" flavor as a blueprint-monospace instead of
+     an actual pixel font — professional at small sizes, no webfont fetch. */
+  --font-mono: ui-monospace, "Cascadia Mono", "JetBrains Mono", Consolas,
+    "SF Mono", monospace;
 
   --rotation: 0deg;
   --accent-shift: 0%;

@@ -35,7 +35,10 @@
     const TIME_SCALE = 0.05; // how fast the field re-organises over time
     const SPEED = 42; // px / second
     const MAX_AGE = 6; // seconds before a particle respawns (keeps it from pooling in sinks)
-    const FADE = "rgba(10, 10, 12, 0.06)"; // per-frame veil that creates trails
+    // Per-frame veil that creates trails. MUST match --color-bg in
+    // global.css — the veil works by repainting the background translucently,
+    // so a mismatched color ghosts a visible tint over the section.
+    const FADE = "rgba(251, 250, 248, 0.06)";
 
     const noise3D = createNoise3D();
     const count = particleBudget(detectDeviceTier());
@@ -195,6 +198,6 @@
     margin: 0;
     font-size: 0.95rem;
     line-height: 1.55;
-    color: rgba(232, 230, 224, 0.65);
+    color: var(--color-ink-soft);
   }
 </style>

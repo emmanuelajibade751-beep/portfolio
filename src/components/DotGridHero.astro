@@ -39,7 +39,7 @@
 
     // Palette (kept in sync with global.css). Canvas can't read CSS vars
     // cheaply per-dot, so the values live here as plain channels.
-    const FG = [232, 230, 224];
+    const FG = [26, 25, 23]; // ink dots on the light bg
     const ACCENT = [212, 98, 58];
 
     // Logical canvas size, kept in locals so the draw code never reads back
@@ -92,7 +92,7 @@
     function renderStatic() {
       ctx.clearRect(0, 0, vw, vh);
       for (const p of points) {
-        drawDot(p.x, p.y, BASE_RADIUS, FG, 0.12);
+        drawDot(p.x, p.y, BASE_RADIUS, FG, 0.14);
       }
     }
 
@@ -112,7 +112,7 @@
           lerp(FG[1], ACCENT[1], t),
           lerp(FG[2], ACCENT[2], t),
         ];
-        const alpha = lerp(0.12, 0.9, t);
+        const alpha = lerp(0.14, 0.85, t);
         drawDot(p.x, p.y, radius, color, alpha);
       }
     }
@@ -178,10 +178,11 @@
 
   .hero__eyebrow {
     margin: 0 0 1rem;
+    font-family: var(--font-mono);
     font-size: 0.8rem;
     letter-spacing: 0.28em;
     text-transform: uppercase;
-    color: var(--color-accent);
+    color: var(--color-accent-deep);
   }
 
   .hero__title {
@@ -197,6 +198,6 @@
     max-width: 46ch;
     font-size: 1.05rem;
     line-height: 1.6;
-    color: rgba(232, 230, 224, 0.7);
+    color: var(--color-ink-soft);
   }
 </style>

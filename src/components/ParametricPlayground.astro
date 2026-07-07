@@ -109,7 +109,7 @@
 
       ctx.beginPath();
       vor.render(ctx);
-      ctx.strokeStyle = "rgba(232, 230, 224, 0.3)";
+      ctx.strokeStyle = "rgba(26, 25, 23, 0.35)"; // ink lines on the light bg
       ctx.lineWidth = 1;
       ctx.stroke();
 
@@ -188,6 +188,32 @@
     z-index: 2;
     width: 280px;
     max-width: calc(100vw - 3rem);
+
+    /* Tweakpane ships a dark default theme; these custom properties inherit
+       into its runtime-injected DOM and reskin it for the light page.
+       (Astro scopes this rule to the host div, and inheritance carries the
+       values down — no :global needed.) */
+    --tp-base-background-color: rgba(255, 255, 255, 0.92);
+    --tp-base-shadow-color: rgba(26, 25, 23, 0.12);
+    --tp-container-background-color: rgba(26, 25, 23, 0.04);
+    --tp-container-background-color-active: rgba(26, 25, 23, 0.1);
+    --tp-container-background-color-focus: rgba(26, 25, 23, 0.08);
+    --tp-container-background-color-hover: rgba(26, 25, 23, 0.06);
+    --tp-container-foreground-color: #1a1917;
+    --tp-button-background-color: #d4623a;
+    --tp-button-background-color-active: #a84a28;
+    --tp-button-background-color-focus: #b85430;
+    --tp-button-background-color-hover: #c25a34;
+    --tp-button-foreground-color: #fbfaf8;
+    --tp-groove-foreground-color: rgba(26, 25, 23, 0.18);
+    --tp-input-background-color: rgba(26, 25, 23, 0.06);
+    --tp-input-background-color-active: rgba(26, 25, 23, 0.14);
+    --tp-input-background-color-focus: rgba(26, 25, 23, 0.12);
+    --tp-input-background-color-hover: rgba(26, 25, 23, 0.09);
+    --tp-input-foreground-color: #1a1917;
+    --tp-label-foreground-color: rgba(26, 25, 23, 0.7);
+    --tp-monitor-background-color: rgba(26, 25, 23, 0.06);
+    --tp-monitor-foreground-color: #1a1917;
   }
 
   .playground__caption {
@@ -210,6 +236,6 @@
     margin: 0;
     font-size: 0.95rem;
     line-height: 1.55;
-    color: rgba(232, 230, 224, 0.65);
+    color: var(--color-ink-soft);
   }
 </style>

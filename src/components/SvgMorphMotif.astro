@@ -1,0 +1,224 @@
+---
+/**
+ * F6 + I5 — self-drawing wireframe that morphs between parametric forms.
+ *
+ * F6: on entrance the outline draws itself via stroke-dashoffset, with the
+ *     dash length measured from getTotalLength() (never hardcoded — the
+ *     whole point is it survives a change of artwork).
+ * I5: it then cycles between shapes generated parametrically (star, hexagon,
+ *     radial burst, an irregular "Voronoi" cell) using Flubber to interpolate
+ *     the path `d`. Flubber resamples both rings to a matched point count,
+ *     which is what avoids the classic mangled-in-between morph.
+ *
+ * "Many forms, one generative logic" — the visual thesis of the site.
+ */
+---
+
+<section class="motif">
+  <div class="motif__stage">
+    <svg viewBox="0 0 200 200" class="motif__svg" aria-hidden="true">
+      <path id="motif-path" class="motif__path" d="" />
+    </svg>
+  </div>
+  <div class="motif__caption">
+    <h2 class="motif__title">One logic, many forms</h2>
+    <p class="motif__text">
+      A single outline drawn from parametric rules, resampled and morphed
+      between a star, a structural cell, a radial field and a Voronoi region.
+    </p>
+  </div>
+</section>
+
+<script>
+  import { interpolate } from "flubber";
+  import { createLoop } from "../lib/loop";
+  import { clamp01, smoothstep } from "../lib/easing";
+  import { prefersReducedMotion, onReducedMotionChange } from "../lib/reduced-motion";
+
+  const maybePath = document.getElementById("motif-path") as SVGPathElement | null;
+
+  if (maybePath) {
+    // Re-bind with a non-null type so the nested closures below don't each
+    // need a `!` assertion (same pattern as canvas.ts).
+    const path: SVGPathElement = maybePath;
+
+    const CENTER = 100;
+
+    // --- Parametric shape generators (the "one logic") --------------------
+    function ngon(sides: number, radius: number, rotation = 0): string {
+      let d = "";
+      for (let i = 0; i < sides; i++) {
+        const a = rotation + (i / sides) * Math.PI * 2 - Math.PI / 2;
+        const x = CENTER + Math.cos(a) * radius;
+        const y = CENTER + Math.sin(a) * radius;
+        d += `${i === 0 ? "M" : "L"}${x.toFixed(2)} ${y.toFixed(2)} `;
+      }
+      return d + "Z";
+    }
+
+    function star(points: number, outer: number, inner: number, rotation = 0): string {
+      let d = "";
+      const steps = points * 2;
+      for (let i = 0; i < steps; i++) {
+        const radius = i % 2 === 0 ? outer : inner;
+        const a = rotation + (i / steps) * Math.PI * 2 - Math.PI / 2;
+        const x = CENTER + Math.cos(a) * radius;
+        const y = CENTER + Math.sin(a) * radius;
+        d += `${i === 0 ? "M" : "L"}${x.toFixed(2)} ${y.toFixed(2)} `;
+      }
+      return d + "Z";
+    }
+
+    // Irregular "Voronoi cell": an n-gon with fixed pseudo-random radii, so
+    // it reads as an organic region while staying deterministic frame to frame.
+    function cell(radii: number[]): string {
+      let d = "";
+      for (let i = 0; i < radii.length; i++) {
+        const a = (i / radii.length) * Math.PI * 2 - Math.PI / 2;
+        const x = CENTER + Math.cos(a) * radii[i];
+        const y = CENTER + Math.sin(a) * radii[i];
+        d += `${i === 0 ? "M" : "L"}${x.toFixed(2)} ${y.toFixed(2)} `;
+      }
+      return d + "Z";
+    }
+
+    const shapes: string[] = [
+      star(4, 82, 30), // compass star (brand motif)
+      ngon(6, 68), // structural / truss cell
+      star(10, 80, 56), // radial field / burst
+      cell([78, 52, 70, 44, 82, 58, 66]), // irregular Voronoi region
+    ];
+
+    // Precompute one interpolator per adjacent pair (last wraps to first).
+    // maxSegmentLength keeps long edges well-sampled so the morph stays smooth.
+    const interpolators = shapes.map((from, i) =>
+      interpolate(from, shapes[(i + 1) % shapes.length], { maxSegmentLength: 3 })
+    );
+
+    // --- Timing -----------------------------------------------------------
+    const ENTRANCE = 1.1; // seconds to draw the first outline (F6)
+    const MORPH = 1.4; // seconds per shape-to-shape morph
+    const HOLD = 1.1; // seconds to rest on each shape
+    const PER = MORPH + HOLD;
+    const CYCLE = PER * shapes.length;
+
+    let drawnEntrance = false;
+    // Entrance state: a boolean flag rather than comparing getAttribute("d")
+    // against the string we set — browsers may normalize the attribute, which
+    // would make a string compare re-init (and re-measure) every frame.
+    let entranceInit = false;
+    // Path length is measured once per entrance and cached; getTotalLength()
+    // walks the whole path geometry, so calling it per frame is waste.
+    let entranceLen = 0;
+
+    function beginMorphMode() {
+      // Drop the dash mask so the outline is solid while its `d` animates;
+      // recomputing dashes every morph frame would be pointless churn.
+      path.style.strokeDasharray = "none";
+      path.style.strokeDashoffset = "0";
+      drawnEntrance = true;
+    }
+
+    function renderFrame(_dt: number, elapsed: number) {
+      if (elapsed < ENTRANCE) {
+        // F6 — self-drawing entrance on the first shape.
+        if (!entranceInit) {
+          path.setAttribute("d", shapes[0]);
+          entranceLen = path.getTotalLength();
+          path.style.strokeDasharray = String(entranceLen);
+          path.style.strokeDashoffset = String(entranceLen);
+          entranceInit = true;
+        }
+        const t = smoothstep(0, 1, clamp01(elapsed / ENTRANCE));
+        path.style.strokeDashoffset = String(entranceLen * (1 - t));
+        return;
+      }
+
+      if (!drawnEntrance) beginMorphMode();
+
+      // I5 — morph loop. localT eases 0->1 during MORPH, then holds at 1.
+      const phase = (elapsed - ENTRANCE) % CYCLE;
+      const idx = Math.floor(phase / PER);
+      const localT = clamp01((phase - idx * PER) / MORPH);
+      // smoothstep (not the overshooting structuralSag) — an overshoot here
+      // would push interpolated vertices past their targets and distort the
+      // shape rather than the position.
+      path.setAttribute("d", interpolators[idx](smoothstep(0, 1, localT)));
+    }
+
+    const loop = createLoop(renderFrame);
+
+    /** Reduced-motion pose: the first shape, fully drawn, no animation. */
+    function renderStatic() {
+      path.setAttribute("d", shapes[0]);
+      path.style.strokeDasharray = "none";
+      path.style.strokeDashoffset = "0";
+    }
+
+    function applyMotion(reduced: boolean) {
+      if (reduced) {
+        loop.stop();
+        renderStatic();
+      } else {
+        // renderStatic() may have cleared the dash mask, so if the loop
+        // resumes inside the entrance window the mask must be rebuilt.
+        drawnEntrance = false;
+        entranceInit = false;
+        loop.start();
+      }
+    }
+
+    applyMotion(prefersReducedMotion());
+    onReducedMotionChange(applyMotion);
+  }
+</script>
+
+<style>
+  .motif {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 2rem;
+    max-width: 960px;
+    margin: 8rem auto;
+    padding: 0 1.5rem;
+  }
+
+  .motif__stage {
+    flex: 0 0 280px;
+    margin: 0 auto;
+  }
+
+  .motif__svg {
+    width: 280px;
+    height: 280px;
+    display: block;
+  }
+
+  .motif__path {
+    fill: none;
+    stroke: var(--color-accent);
+    stroke-width: 1.5;
+    stroke-linejoin: round;
+    stroke-linecap: round;
+  }
+
+  .motif__caption {
+    flex: 1 1 320px;
+  }
+
+  .motif__title {
+    margin: 0 0 0.5rem;
+    font-size: 1.6rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+
+  .motif__text {
+    margin: 0;
+    max-width: 42ch;
+    font-size: 0.95rem;
+    line-height: 1.55;
+    color: rgba(232, 230, 224, 0.65);
+  }
+</style>

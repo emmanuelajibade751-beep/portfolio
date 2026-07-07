@@ -1,0 +1,200 @@
+---
+/**
+ * I4 — simplex-noise flow field.
+ *
+ * Hundreds of particles sample a 3D simplex-noise field for a heading and
+ * advect along it, leaving fading trails. This is conceptually identical to
+ * a Grasshopper attractor-driven point distribution — a continuous vector
+ * field sampled at many points — but running live at 60fps in the browser.
+ * The third noise dimension is time, so the whole field slowly re-organises.
+ */
+---
+
+<section class="flow">
+  <canvas id="flow-field" class="flow__canvas" aria-hidden="true"></canvas>
+  <div class="flow__caption">
+    <h2 class="flow__title">Flow field</h2>
+    <p class="flow__text">
+      A noise-driven vector field — the same generative logic as an
+      attractor-based point distribution, sampled by hundreds of particles.
+    </p>
+  </div>
+</section>
+
+<script>
+  import { createNoise3D } from "simplex-noise";
+  import { createResponsiveCanvas } from "../lib/canvas";
+  import { createLoop } from "../lib/loop";
+  import { detectDeviceTier, particleBudget } from "../lib/device-tier";
+  import { prefersReducedMotion, onReducedMotionChange } from "../lib/reduced-motion";
+
+  const canvas = document.getElementById("flow-field") as HTMLCanvasElement | null;
+
+  if (canvas) {
+    const NOISE_SCALE = 0.0016; // spatial frequency of the field
+    const TIME_SCALE = 0.05; // how fast the field re-organises over time
+    const SPEED = 42; // px / second
+    const MAX_AGE = 6; // seconds before a particle respawns (keeps it from pooling in sinks)
+    const FADE = "rgba(10, 10, 12, 0.06)"; // per-frame veil that creates trails
+
+    const noise3D = createNoise3D();
+    const count = particleBudget(detectDeviceTier());
+
+    interface Particle {
+      x: number;
+      y: number;
+      px: number; // previous position, for drawing the trail segment
+      py: number;
+      age: number;
+      maxAge: number;
+    }
+
+    const particles: Particle[] = [];
+
+    // Logical size in locals (see the same note in DotGridHero): the resize
+    // callback fires synchronously during setup, before `surface` is bound.
+    // count/particles are declared above so initParticles() is safe to call
+    // from that first synchronous callback.
+    let vw = 0;
+    let vh = 0;
+    let ready = false;
+
+    const surface = createResponsiveCanvas(canvas, ({ width, height }) => {
+      vw = width;
+      vh = height;
+      initParticles();
+      // A resize clears the backing store; repaint the static pose by hand.
+      if (ready && prefersReducedMotion()) renderStatic();
+    });
+    const ctx = surface.ctx;
+
+    function spawn(p: Particle) {
+      p.x = Math.random() * vw;
+      p.y = Math.random() * vh;
+      p.px = p.x;
+      p.py = p.y;
+      p.age = 0;
+      p.maxAge = MAX_AGE * (0.5 + Math.random()); // stagger respawns
+    }
+
+    function initParticles() {
+      particles.length = 0;
+      for (let i = 0; i < count; i++) {
+        const p: Particle = { x: 0, y: 0, px: 0, py: 0, age: 0, maxAge: 0 };
+        spawn(p);
+        particles.push(p);
+      }
+    }
+
+    function fieldAngle(x: number, y: number, time: number): number {
+      // noise in [-1, 1] -> a full range of headings.
+      return noise3D(x * NOISE_SCALE, y * NOISE_SCALE, time * TIME_SCALE) * Math.PI * 2;
+    }
+
+    function renderFrame(dt: number, elapsed: number) {
+      // Trails: veil the whole canvas with a translucent bg instead of
+      // clearing, so previous positions fade rather than vanish.
+      ctx.fillStyle = FADE;
+      ctx.fillRect(0, 0, vw, vh);
+
+      ctx.strokeStyle = "rgba(212, 98, 58, 0.5)";
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+
+      for (const p of particles) {
+        const angle = fieldAngle(p.x, p.y, elapsed);
+        p.px = p.x;
+        p.py = p.y;
+        // dt-scaled step: identical travel per second at 60Hz or 144Hz (F3).
+        p.x += Math.cos(angle) * SPEED * dt;
+        p.y += Math.sin(angle) * SPEED * dt;
+        p.age += dt;
+
+        const offscreen = p.x < 0 || p.x > vw || p.y < 0 || p.y > vh;
+        if (offscreen || p.age > p.maxAge) {
+          spawn(p);
+          continue; // don't draw a streak across the whole canvas on respawn
+        }
+
+        ctx.moveTo(p.px, p.py);
+        ctx.lineTo(p.x, p.y);
+      }
+      ctx.stroke();
+    }
+
+    const loop = createLoop(renderFrame);
+
+    /** Reduced-motion pose: a static vector-field diagram, drawn once. */
+    function renderStatic() {
+      ctx.clearRect(0, 0, vw, vh);
+      const step = 34;
+      const len = 12;
+      ctx.strokeStyle = "rgba(212, 98, 58, 0.45)";
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      for (let y = step / 2; y < vh; y += step) {
+        for (let x = step / 2; x < vw; x += step) {
+          const angle = fieldAngle(x, y, 0);
+          ctx.moveTo(x, y);
+          ctx.lineTo(x + Math.cos(angle) * len, y + Math.sin(angle) * len);
+        }
+      }
+      ctx.stroke();
+    }
+
+    function applyMotion(reduced: boolean) {
+      if (reduced) {
+        loop.stop();
+        renderStatic();
+      } else {
+        loop.start();
+      }
+    }
+
+    initParticles();
+    ready = true;
+    applyMotion(prefersReducedMotion());
+    onReducedMotionChange(applyMotion);
+  }
+</script>
+
+<style>
+  .flow {
+    position: relative;
+    height: 80vh;
+    min-height: 480px;
+    overflow: hidden;
+    border-top: 1px solid var(--color-grid-line);
+  }
+
+  .flow__canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+
+  .flow__caption {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    z-index: 1;
+    max-width: 420px;
+    padding: 2rem 1.5rem;
+  }
+
+  .flow__title {
+    margin: 0 0 0.5rem;
+    font-size: 1.6rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+
+  .flow__text {
+    margin: 0;
+    font-size: 0.95rem;
+    line-height: 1.55;
+    color: rgba(232, 230, 224, 0.65);
+  }
+</style>

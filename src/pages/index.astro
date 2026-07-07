@@ -1,0 +1,126 @@
+---
+import "../styles/global.css";
+import DotGridHero from "../components/DotGridHero.astro";
+import SvgMorphMotif from "../components/SvgMorphMotif.astro";
+import FlowField from "../components/FlowField.astro";
+import VoronoiScrub from "../components/VoronoiScrub.astro";
+import ParametricPlayground from "../components/ParametricPlayground.astro";
+---
+
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<link rel="icon" href="/favicon.ico" />
+		<meta name="viewport" content="width=device-width" />
+		<meta name="generator" content={Astro.generator} />
+		<title>Computational Design Portfolio</title>
+	</head>
+	<body>
+		<!-- F5: cursor-reactive dot grid -->
+		<DotGridHero />
+
+		<!-- F1–F4 skeleton reference: one --rotation var, delta-time rAF loop,
+		     hand-rolled easing, reduced-motion fallback. -->
+		<section class="motion-demo">
+			<h2>Motion primitives (F1–F4)</h2>
+			<p>
+				Rotation is driven by one <code>--rotation</code> custom property
+				(F1), advanced by a delta-time rAF loop (F3), shaped by a hand-rolled
+				"structural sag" easing curve (F4), and disabled in favor of a static
+				pose when the OS reduced-motion setting is on (F2).
+			</p>
+
+			<svg
+				class="motion-demo__icon"
+				viewBox="0 0 100 100"
+				width="120"
+				height="120"
+				aria-hidden="true"
+			>
+				<path
+					d="M50 5 L60 40 L95 50 L60 60 L50 95 L40 60 L5 50 L40 40 Z"
+					fill="var(--color-accent)"
+				/>
+			</svg>
+
+			<p class="motion-demo__status" data-role="status">checking motion preference…</p>
+		</section>
+
+		<!-- F6 + I5: self-drawing wireframe that morphs between parametric forms -->
+		<SvgMorphMotif />
+
+		<!-- I4: simplex-noise flow field -->
+		<FlowField />
+
+		<!-- I1: scroll-scrubbed Lloyd-relaxation timeline (pinned section) -->
+		<VoronoiScrub />
+
+		<!-- I7: the same solver, driven by visitor-facing sliders -->
+		<ParametricPlayground />
+
+		<script>
+			import { syncReducedMotionAttribute, onReducedMotionChange, prefersReducedMotion } from "../lib/reduced-motion";
+			import { createLoop } from "../lib/loop";
+			import { structuralSag } from "../lib/easing";
+
+			const icon = document.querySelector<SVGElement>(".motion-demo__icon");
+			const status = document.querySelector<HTMLElement>('[data-role="status"]');
+
+			syncReducedMotionAttribute();
+
+			const CYCLE_SECONDS = 2.4;
+			const MAX_ROTATION_DEG = 90;
+
+			const loop = createLoop((_delta, elapsed) => {
+				const cycleT = (elapsed % CYCLE_SECONDS) / CYCLE_SECONDS;
+				// In [0, 0.5) scale to [0, 1]; in [0.5, 1) mirror back to [1, 0].
+				// Both branches meet at 1 when cycleT = 0.5, so there's no jump.
+				const pingPongT = cycleT < 0.5 ? cycleT * 2 : (1 - cycleT) * 2;
+				const eased = structuralSag(pingPongT, 0.8);
+				const angleDeg = eased * MAX_ROTATION_DEG;
+				icon?.style.setProperty("--rotation", `${angleDeg}deg`);
+				icon?.style.setProperty("transform", "rotate(var(--rotation))");
+			});
+
+			function applyMotionState(reduced: boolean) {
+				if (reduced) {
+					loop.stop();
+					icon?.style.setProperty("--rotation", "45deg");
+					icon?.style.setProperty("transform", "rotate(var(--rotation))");
+					if (status) status.textContent = "reduced motion is ON — showing a static pose.";
+				} else {
+					if (status) status.textContent = "reduced motion is OFF — icon oscillates via rAF loop.";
+					loop.start();
+				}
+			}
+
+			applyMotionState(prefersReducedMotion());
+			onReducedMotionChange(applyMotionState);
+		</script>
+	</body>
+</html>
+
+<style>
+	.motion-demo {
+		max-width: 640px;
+		margin: 6rem auto;
+		padding: 0 1.5rem;
+		text-align: center;
+	}
+
+	.motion-demo h2 {
+		font-size: 1.6rem;
+		font-weight: 600;
+	}
+
+	.motion-demo__icon {
+		margin: 2rem 0;
+		transform-origin: 50% 50%;
+	}
+
+	.motion-demo__status {
+		font-size: 0.85rem;
+		color: rgba(232, 230, 224, 0.45);
+	}
+</style>

@@ -1,0 +1,217 @@
+---
+/**
+ * I7 — live parameter controls bound to a generative visual.
+ *
+ * The same Lloyd-relaxation solver the scroll section scrubs (lib/lloyd.ts),
+ * except here the visitor drives it directly with sliders — cell count, seed,
+ * relaxation depth — like handing them the Grasshopper sliders instead of a
+ * baked render.
+ *
+ * The I7 pitfall — regenerating expensive geometry on every slider `input`
+ * event — is handled by splitting parameters into two classes:
+ *   - CHEAP (relaxation depth, show-seeds): re-render only, applied live on
+ *     every input event (~0.2ms: one lerp + one Delaunay build).
+ *   - EXPENSIVE (cell count, seed): full snapshot recompute (tens of ms),
+ *     gated on Tweakpane's `ev.last` — fires once when the visitor releases
+ *     the slider, not continuously while dragging.
+ *
+ * There is no rAF loop here at all: the scene renders once per parameter
+ * change and is otherwise inert. That also makes the reduced-motion story
+ * trivial — nothing moves unless the visitor moves it, which the spec
+ * treats as user-initiated interaction, not ambient animation.
+ */
+---
+
+<section class="playground">
+  <canvas id="playground-canvas" class="playground__canvas" aria-hidden="true"></canvas>
+  <div
+    id="playground-pane"
+    class="playground__pane"
+    role="group"
+    aria-label="Voronoi field parameters"
+  ></div>
+  <div class="playground__caption">
+    <h2 class="playground__title">Hands on the sliders</h2>
+    <p class="playground__text">
+      The same relaxation solver as above — but you drive it. Cell count and
+      seed rebuild the field on release; relaxation depth scrubs live.
+    </p>
+  </div>
+</section>
+
+<script>
+  import { Pane } from "tweakpane";
+  import { Delaunay } from "d3-delaunay";
+  import { createResponsiveCanvas } from "../lib/canvas";
+  import { lerp } from "../lib/easing";
+  import { relaxationSnapshots } from "../lib/lloyd";
+
+  const canvas = document.getElementById("playground-canvas") as HTMLCanvasElement | null;
+  const paneHost = document.getElementById("playground-pane");
+
+  if (canvas && paneHost) {
+    const STEPS = 36;
+    const SPACE_W = 1000;
+    const SPACE_H = 620;
+
+    // The visitor-facing parameter set. `relax` is fractional so the slider
+    // scrubs smoothly between iteration snapshots rather than stepping.
+    const params = {
+      cells: 140,
+      seed: 1,
+      relax: 18,
+      showSeeds: true,
+    };
+
+    let snapshots = relaxationSnapshots({
+      count: params.cells,
+      steps: STEPS,
+      width: SPACE_W,
+      height: SPACE_H,
+      seed: params.seed,
+    });
+    // Scratch buffer sized to the CURRENT cell count; reallocated only on
+    // rebuild (cheap param changes reuse it).
+    let scratch = new Float64Array(params.cells * 2);
+
+    let vw = 0;
+    let vh = 0;
+    let ready = false;
+
+    const surface = createResponsiveCanvas(canvas, ({ width, height }) => {
+      vw = width;
+      vh = height;
+      if (ready) render();
+    });
+    const ctx = surface.ctx;
+
+    // Near-twin of VoronoiScrub's render() (same lerp-scale-draw pipeline,
+    // different driver) — if you fix a drawing bug here, check there too.
+    function render() {
+      if (vw === 0 || vh === 0) return; // no surface to draw on
+      // Clamp just below STEPS: at relax === STEPS exactly, floor(f) would
+      // be STEPS and b = snapshots[STEPS + 1] would run off the end of the
+      // array. The epsilon keeps i at STEPS - 1 with t ≈ 1 instead.
+      const f = Math.min(params.relax, STEPS - 0.0001);
+      const i = Math.floor(f);
+      const t = f - i;
+      const a = snapshots[i];
+      const b = snapshots[i + 1];
+      const sx = vw / SPACE_W;
+      const sy = vh / SPACE_H;
+      const n = scratch.length / 2;
+      for (let j = 0; j < n; j++) {
+        scratch[j * 2] = lerp(a[j * 2], b[j * 2], t) * sx;
+        scratch[j * 2 + 1] = lerp(a[j * 2 + 1], b[j * 2 + 1], t) * sy;
+      }
+
+      ctx.clearRect(0, 0, vw, vh);
+      const delaunay = new Delaunay(scratch);
+      const vor = delaunay.voronoi([0, 0, vw, vh]);
+
+      ctx.beginPath();
+      vor.render(ctx);
+      ctx.strokeStyle = "rgba(232, 230, 224, 0.3)";
+      ctx.lineWidth = 1;
+      ctx.stroke();
+
+      if (params.showSeeds) {
+        ctx.beginPath();
+        delaunay.renderPoints(ctx, 2.2);
+        ctx.fillStyle = "rgba(212, 98, 58, 0.85)";
+        ctx.fill();
+      }
+    }
+
+    /** EXPENSIVE path: full solver re-run. Only ever called on slider release. */
+    function rebuild() {
+      snapshots = relaxationSnapshots({
+        count: params.cells,
+        steps: STEPS,
+        width: SPACE_W,
+        height: SPACE_H,
+        seed: params.seed,
+      });
+      scratch = new Float64Array(params.cells * 2);
+      render();
+    }
+
+    // --- Controls -----------------------------------------------------------
+    const pane = new Pane({ container: paneHost, title: "Parameters" });
+
+    pane
+      .addBinding(params, "cells", { min: 20, max: 320, step: 1, label: "cell count" })
+      .on("change", (ev) => {
+        // ev.last is true only when the drag ends — the debounce that keeps
+        // a tens-of-ms recompute off the every-input-event hot path.
+        if (ev.last) rebuild();
+      });
+
+    pane
+      .addBinding(params, "seed", { min: 1, max: 999, step: 1, label: "seed" })
+      .on("change", (ev) => {
+        if (ev.last) rebuild();
+      });
+
+    pane
+      .addBinding(params, "relax", { min: 0, max: STEPS, step: 0.05, label: "relaxation" })
+      .on("change", () => render()); // cheap: live on every input event
+
+    pane
+      .addBinding(params, "showSeeds", { label: "show seeds" })
+      .on("change", () => render());
+
+    ready = true;
+    render();
+  }
+</script>
+
+<style>
+  .playground {
+    position: relative;
+    height: 85vh;
+    min-height: 520px;
+    overflow: hidden;
+    border-top: 1px solid var(--color-grid-line);
+  }
+
+  .playground__canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+
+  .playground__pane {
+    position: absolute;
+    top: 1.5rem;
+    right: 1.5rem;
+    z-index: 2;
+    width: 280px;
+    max-width: calc(100vw - 3rem);
+  }
+
+  .playground__caption {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    z-index: 1;
+    max-width: 420px;
+    padding: 2rem 1.5rem;
+  }
+
+  .playground__title {
+    margin: 0 0 0.5rem;
+    font-size: 1.6rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+
+  .playground__text {
+    margin: 0;
+    font-size: 0.95rem;
+    line-height: 1.55;
+    color: rgba(232, 230, 224, 0.65);
+  }
+</style>

@@ -1,0 +1,202 @@
+---
+/**
+ * F5 — cursor-reactive dot grid.
+ *
+ * A regular grid of dots where each dot's size and colour is a function of
+ * its distance to the cursor — the simplest honest "attractor field": the
+ * same distance-falloff idea behind a Grasshopper point-attractor, rendered
+ * live at 60fps. The influence point eases toward the real cursor (F4 lerp)
+ * so the field trails smoothly rather than snapping.
+ */
+---
+
+<section class="hero">
+  <canvas id="dot-grid" class="hero__canvas" aria-hidden="true"></canvas>
+  <div class="hero__content">
+    <p class="hero__eyebrow">Computational Design</p>
+    <h1 class="hero__title">Parametric systems,<br />built to be felt.</h1>
+    <p class="hero__lede">
+      Facades, structures and generative geometry — explored as live,
+      manipulable fields rather than static renders.
+    </p>
+  </div>
+</section>
+
+<script>
+  import { createResponsiveCanvas } from "../lib/canvas";
+  import { createLoop } from "../lib/loop";
+  import { lerp, smoothstep } from "../lib/easing";
+  import { prefersReducedMotion, onReducedMotionChange } from "../lib/reduced-motion";
+
+  const canvas = document.getElementById("dot-grid") as HTMLCanvasElement | null;
+
+  if (canvas) {
+    const SPACING = 30; // px between dots
+    const BASE_RADIUS = 1.1;
+    const MAX_RADIUS = 3.6;
+    const INFLUENCE = 150; // px radius of cursor effect
+    const EASE = 0.12; // how fast the influence point chases the cursor
+
+    // Palette (kept in sync with global.css). Canvas can't read CSS vars
+    // cheaply per-dot, so the values live here as plain channels.
+    const FG = [232, 230, 224];
+    const ACCENT = [212, 98, 58];
+
+    // Logical canvas size, kept in locals so the draw code never reads back
+    // through `surface` (which is still in its temporal-dead-zone during the
+    // initial synchronous resize callback below).
+    let vw = 0;
+    let vh = 0;
+    let ready = false;
+
+    let points: { x: number; y: number }[] = [];
+    // Target = real cursor; eased = the lagging influence point we draw from.
+    // Start off-screen so the grid is uniform until the user moves.
+    let targetX = -9999;
+    let targetY = -9999;
+    let easedX = -9999;
+    let easedY = -9999;
+
+    const surface = createResponsiveCanvas(canvas, ({ width, height }) => {
+      vw = width;
+      vh = height;
+      rebuildGrid();
+      // A resize clears the backing store. While the loop runs it repaints
+      // next frame anyway; in the static pose we must repaint by hand.
+      if (ready && (prefersReducedMotion() || !finePointer)) renderStatic();
+    });
+    const ctx = surface.ctx;
+
+    function rebuildGrid() {
+      points = [];
+      // Inset by half a cell so the grid is visually centred.
+      const cols = Math.floor(vw / SPACING);
+      const rows = Math.floor(vh / SPACING);
+      const offsetX = (vw - cols * SPACING) / 2 + SPACING / 2;
+      const offsetY = (vh - rows * SPACING) / 2 + SPACING / 2;
+      for (let r = 0; r <= rows; r++) {
+        for (let c = 0; c <= cols; c++) {
+          points.push({ x: offsetX + c * SPACING, y: offsetY + r * SPACING });
+        }
+      }
+    }
+
+    function drawDot(x: number, y: number, radius: number, color: number[], alpha: number) {
+      ctx.beginPath();
+      ctx.arc(x, y, radius, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(${color[0]}, ${color[1]}, ${color[2]}, ${alpha})`;
+      ctx.fill();
+    }
+
+    /** Static, uniform grid — the reduced-motion pose and the resize fallback. */
+    function renderStatic() {
+      ctx.clearRect(0, 0, vw, vh);
+      for (const p of points) {
+        drawDot(p.x, p.y, BASE_RADIUS, FG, 0.12);
+      }
+    }
+
+    function renderFrame() {
+      // Chase the cursor with an eased influence point (F4 lerp).
+      easedX = lerp(easedX, targetX, EASE);
+      easedY = lerp(easedY, targetY, EASE);
+
+      ctx.clearRect(0, 0, vw, vh);
+      for (const p of points) {
+        const dist = Math.hypot(p.x - easedX, p.y - easedY);
+        // 1 at the cursor, easing to 0 at the influence radius.
+        const t = 1 - smoothstep(0, INFLUENCE, dist);
+        const radius = lerp(BASE_RADIUS, MAX_RADIUS, t);
+        const color = [
+          lerp(FG[0], ACCENT[0], t),
+          lerp(FG[1], ACCENT[1], t),
+          lerp(FG[2], ACCENT[2], t),
+        ];
+        const alpha = lerp(0.12, 0.9, t);
+        drawDot(p.x, p.y, radius, color, alpha);
+      }
+    }
+
+    const loop = createLoop(renderFrame);
+
+    // Pointer tracking (fine pointers only — a coarse/touch pointer has no
+    // hover state to react to, so it gets the static grid).
+    const finePointer = window.matchMedia("(pointer: fine)").matches;
+    if (finePointer) {
+      window.addEventListener("pointermove", (event) => {
+        const rect = canvas.getBoundingClientRect();
+        targetX = event.clientX - rect.left;
+        targetY = event.clientY - rect.top;
+      });
+      canvas.addEventListener("pointerleave", () => {
+        targetX = -9999;
+        targetY = -9999;
+      });
+    }
+
+    // F2 — reduced motion is the hard gate. When on, the loop never runs and
+    // we paint a single static frame; toggling the OS setting flips live.
+    function applyMotion(reduced: boolean) {
+      if (reduced || !finePointer) {
+        loop.stop();
+        renderStatic();
+      } else {
+        loop.start();
+      }
+    }
+
+    ready = true;
+    applyMotion(prefersReducedMotion());
+    onReducedMotionChange(applyMotion);
+  }
+</script>
+
+<style>
+  .hero {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+  }
+
+  .hero__canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+
+  .hero__content {
+    position: relative;
+    z-index: 1;
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+  }
+
+  .hero__eyebrow {
+    margin: 0 0 1rem;
+    font-size: 0.8rem;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+  }
+
+  .hero__title {
+    margin: 0 0 1.25rem;
+    font-size: clamp(2.2rem, 6vw, 4rem);
+    line-height: 1.05;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+  }
+
+  .hero__lede {
+    margin: 0;
+    max-width: 46ch;
+    font-size: 1.05rem;
+    line-height: 1.6;
+    color: rgba(232, 230, 224, 0.7);
+  }
+</style>

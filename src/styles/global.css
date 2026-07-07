@@ -1,0 +1,67 @@
+/* ---------------------------------------------------------------------
+   Animation bus (F1)
+
+   Every animated value that CSS, JS, and SVG need to share lives here as
+   a custom property. Angle-typed properties are registered with
+   @property so the browser can tween them natively instead of jumping.
+   --------------------------------------------------------------------- */
+/* Registering as <angle> lets the browser natively tween this value;
+   an unregistered custom property jumps between values instead of
+   interpolating. */
+@property --rotation {
+  syntax: "<angle>";
+  inherits: true;
+  initial-value: 0deg;
+}
+
+@property --accent-shift {
+  syntax: "<percentage>";
+  inherits: true;
+  initial-value: 0%;
+}
+
+:root {
+  --color-bg: #0a0a0c;
+  --color-fg: #e8e6e0;
+  --color-accent: #d4623a;
+  --color-grid-line: rgba(232, 230, 224, 0.08);
+
+  --rotation: 0deg;
+  --accent-shift: 0%;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--color-bg);
+  color: var(--color-fg);
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+/* ---------------------------------------------------------------------
+   Reduced-motion architecture (F2)
+
+   Default posture: motion is allowed. Anything that plays a continuous
+   or decorative animation must also define its [data-motion="reduced"]
+   state here, next to the animated rule, not bolted on separately.
+   --------------------------------------------------------------------- */
+[data-motion="reduced"] .motion-demo__icon {
+  transition: none;
+  animation: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

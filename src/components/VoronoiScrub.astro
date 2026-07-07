@@ -1,0 +1,197 @@
+---
+/**
+ * I1 — scroll-scrubbed timeline: Lloyd relaxation driven by scroll.
+ *
+ * A Voronoi diagram's seed points start scattered and relax toward even
+ * spacing (Lloyd's algorithm). All relaxation steps are precomputed into
+ * snapshots at load; scroll position scrubs the timeline forwards AND
+ * backwards through them — a Grasshopper timeline slider where the slider
+ * is the scroll bar. GSAP's ScrollTrigger pins the section and maps scroll
+ * distance to progress; the tween's ease is "none" because scrub itself is
+ * the interaction — easing belongs to the user's finger, not the tween.
+ *
+ * Reduced motion runs through gsap.matchMedia(): the scrub/pin only exists
+ * while "(prefers-reduced-motion: no-preference)" matches, and GSAP
+ * auto-reverts the ScrollTrigger (including unpinning) if the OS setting
+ * flips mid-session. The reduced branch shows the final relaxed state.
+ *
+ * Known pitfall (deferred): pinned sections can fight iOS Safari's momentum
+ * scrolling / URL-bar collapse. ScrollTrigger.normalizeScroll(true) is the
+ * usual fix but has tradeoffs (hijacks native scroll) — decide when testing
+ * on a real device, not preemptively.
+ */
+---
+
+<section class="scrub" id="voronoi-scrub">
+  <canvas class="scrub__canvas" id="voronoi-canvas" aria-hidden="true"></canvas>
+  <div class="scrub__caption">
+    <h2 class="scrub__title">Relaxation, scrubbed</h2>
+    <p class="scrub__text">
+      Lloyd's algorithm relaxing a Voronoi field — scroll drives the timeline,
+      forward and back, like dragging a definition's slider.
+    </p>
+  </div>
+</section>
+
+<script>
+  import gsap from "gsap";
+  import { ScrollTrigger } from "gsap/ScrollTrigger";
+  import { Delaunay } from "d3-delaunay";
+  import { createResponsiveCanvas } from "../lib/canvas";
+  import { lerp } from "../lib/easing";
+  import { relaxationSnapshots } from "../lib/lloyd";
+
+  const canvas = document.getElementById("voronoi-canvas") as HTMLCanvasElement | null;
+  const section = document.getElementById("voronoi-scrub");
+
+  if (canvas && section) {
+    gsap.registerPlugin(ScrollTrigger);
+
+    // --- Precompute the relaxation timeline --------------------------------
+    // Geometry is solved once, in a fixed abstract space, then scaled to the
+    // canvas at draw time — same separation as solving in GH and baking to a
+    // viewport. SPACE aspect roughly matches a wide section so cells don't
+    // stretch too grotesquely on scale.
+    const POINTS = 140;
+    const STEPS = 36; // relaxation iterations = timeline length
+    const SPACE_W = 1000;
+    const SPACE_H = 620;
+
+    // Solver lives in lib/lloyd.ts (shared with ParametricPlayground —
+    // same relaxation timeline there, driven by sliders instead of scroll).
+    const snapshots = relaxationSnapshots({
+      count: POINTS,
+      steps: STEPS,
+      width: SPACE_W,
+      height: SPACE_H,
+      seed: 0xc0ffee,
+    });
+
+    // Reused per render — avoids allocating a 280-double array every frame.
+    const scratch = new Float64Array(POINTS * 2);
+
+    // --- Rendering ----------------------------------------------------------
+    let vw = 0;
+    let vh = 0;
+    let ready = false;
+    let progress = 0; // remembered so a resize can re-render the same frame
+
+    const surface = createResponsiveCanvas(canvas, ({ width, height }) => {
+      vw = width;
+      vh = height;
+      if (ready) render(progress);
+    });
+    const ctx = surface.ctx;
+
+    // Near-twin of ParametricPlayground's render() (same lerp-scale-draw
+    // pipeline, different driver) — if you fix a drawing bug here, check
+    // there too.
+    function render(p: number) {
+      progress = p;
+      // Guard against zero-size layout (hidden ancestor, mid-teardown):
+      // scaling by 0 would collapse every seed to (0,0) and hand Delaunay
+      // a fully degenerate input for nothing — there's no surface to draw on.
+      if (vw === 0 || vh === 0) return;
+      // Fractional index into the snapshot timeline, lerping between the
+      // two neighbouring steps so the scrub is continuous, not stepped.
+      const f = p * (snapshots.length - 1);
+      const i = Math.min(Math.floor(f), snapshots.length - 2);
+      const t = f - i;
+      const a = snapshots[i];
+      const b = snapshots[i + 1];
+      // Scale into canvas pixels here (rather than ctx.scale) so stroke
+      // widths stay uniform even when the section's aspect ratio differs
+      // from the solve space.
+      const sx = vw / SPACE_W;
+      const sy = vh / SPACE_H;
+      for (let j = 0; j < POINTS; j++) {
+        scratch[j * 2] = lerp(a[j * 2], b[j * 2], t) * sx;
+        scratch[j * 2 + 1] = lerp(a[j * 2 + 1], b[j * 2 + 1], t) * sy;
+      }
+
+      ctx.clearRect(0, 0, vw, vh);
+      const delaunay = new Delaunay(scratch);
+      const vor = delaunay.voronoi([0, 0, vw, vh]);
+
+      ctx.beginPath();
+      vor.render(ctx); // all cell edges in one path
+      ctx.strokeStyle = "rgba(232, 230, 224, 0.3)";
+      ctx.lineWidth = 1;
+      ctx.stroke();
+
+      ctx.beginPath();
+      delaunay.renderPoints(ctx, 2.2); // all seeds in one path
+      ctx.fillStyle = "rgba(212, 98, 58, 0.85)";
+      ctx.fill();
+    }
+
+    ready = true;
+
+    // --- Scroll binding (reduced-motion aware via gsap.matchMedia) ---------
+    const mm = gsap.matchMedia();
+
+    mm.add("(prefers-reduced-motion: no-preference)", () => {
+      const state = { p: 0 };
+      gsap.to(state, {
+        p: 1,
+        ease: "none", // scroll position IS the timeline; no added easing
+        scrollTrigger: {
+          trigger: section,
+          start: "top top",
+          end: "+=1600", // px of scroll mapped across the whole relaxation
+          scrub: 0.5, // ~0.5s catch-up smooths wheel-notch steps
+          pin: true, // hold the section fixed while the scrub distance plays out
+          anticipatePin: 1, // apply the pin a frame early so fast scrolls don't flash unpinned content
+        },
+        onUpdate: () => render(state.p),
+      });
+      render(state.p); // paint the initial (scattered) frame immediately
+      // No manual cleanup needed: if this media query stops matching,
+      // gsap.matchMedia reverts the tween and its ScrollTrigger (unpins too).
+    });
+
+    mm.add("(prefers-reduced-motion: reduce)", () => {
+      render(1); // the final, fully-relaxed field as a static pose
+    });
+  }
+</script>
+
+<style>
+  .scrub {
+    position: relative;
+    height: 100vh;
+    overflow: hidden;
+    border-top: 1px solid var(--color-grid-line);
+  }
+
+  .scrub__canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+
+  .scrub__caption {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    z-index: 1;
+    max-width: 420px;
+    padding: 2rem 1.5rem;
+  }
+
+  .scrub__title {
+    margin: 0 0 0.5rem;
+    font-size: 1.6rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+
+  .scrub__text {
+    margin: 0;
+    font-size: 0.95rem;
+    line-height: 1.55;
+    color: rgba(232, 230, 224, 0.65);
+  }
+</style>

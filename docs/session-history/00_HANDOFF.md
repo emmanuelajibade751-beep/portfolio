@@ -29,6 +29,9 @@ catalogue, real site chrome.
 - Git: 8 commits from `5da3337` (pre-conversion rollback point: the
   original dark animation demo) through the night jobs. Tree clean at
   handoff (plus the session-history docs commit that added this folder).
+- First run in a fresh environment: Node **>=22.12.0** required
+  (`engines` in package.json), then `npm install` before any of the
+  commands below.
 - Dev server: `npm run dev` → localhost:4321. NOTE: the owner's
   `.claude/launch.json` for previewing lives in the OLD session's cwd
   (the "Kaggle_files" folder) — for a session opened in THIS folder,

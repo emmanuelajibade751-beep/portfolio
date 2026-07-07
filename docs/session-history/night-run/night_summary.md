@@ -46,5 +46,6 @@
 - All bio/project copy is `[Placeholder — replace]` — the site is
   structurally ready to go; it needs your real projects via
   HOW_TO_ADD_A_PROJECT.md.
-- Nothing was pushed/deployed anywhere; 7 local commits on the portfolio
-  repo (`5da3337` rollback point → `90695c2`).
+- Nothing was pushed/deployed anywhere; 6 local commits on the portfolio
+  repo (`5da3337` rollback point → `90695c2`; job 01 was read-only, so
+  jobs 02–07 each produced one commit).

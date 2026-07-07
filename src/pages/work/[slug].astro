@@ -1,5 +1,5 @@
 ---
-import "../../styles/global.css";
+import Base from "../../layouts/Base.astro";
 import { getCollection, render } from "astro:content";
 import { Image } from "astro:assets";
 
@@ -19,18 +19,11 @@ const dateLabel = project.data.date.toLocaleDateString("en-GB", {
 });
 ---
 
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="icon" href="/favicon.ico" />
-    <meta name="viewport" content="width=device-width" />
-    <meta name="generator" content={Astro.generator} />
-    <meta name="description" content={project.data.description} />
-    <title>{project.data.title} — Computational Design Portfolio</title>
-  </head>
-  <body>
-    <article class="project">
+<Base
+  title={`${project.data.title} — Emmanuel Ajibade`}
+  description={project.data.description}
+>
+  <article class="project">
       <a class="project__back" href="/#work">&larr; All projects</a>
 
       <header class="project__head">
@@ -56,8 +49,7 @@ const dateLabel = project.data.date.toLocaleDateString("en-GB", {
         <Content />
       </div>
     </article>
-  </body>
-</html>
+</Base>
 
 <style>
   .project {

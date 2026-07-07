@@ -1,0 +1,161 @@
+---
+/**
+ * About + contact block. All copy here is owner-editable placeholder,
+ * clearly marked — structure (portrait slot, skills list, mailto CTA)
+ * is the deliverable.
+ */
+---
+
+<section class="about" id="about">
+  <div class="about__text">
+    <p class="about__eyebrow">About</p>
+    <h2 class="about__title">Design systems, not one-off models</h2>
+    <!-- Owner: replace these paragraphs with your own story. -->
+    <p>
+      [Placeholder — replace.] I'm a computational designer working across
+      architecture and structure: parametric facades, form-found canopies,
+      and generative massing studies that turn briefs into searchable
+      design spaces.
+    </p>
+    <p>
+      [Placeholder — replace.] My tools of choice are Rhino, Grasshopper and
+      C# — building definitions that survive contact with real projects:
+      fabrication constraints, rationalisation, and late-stage changes.
+    </p>
+    <ul class="about__skills" aria-label="Tools and skills">
+      <li>Rhino</li>
+      <li>Grasshopper</li>
+      <li>C# / RhinoCommon</li>
+      <li>Form-finding</li>
+      <li>Panelization</li>
+      <li>Optioneering</li>
+    </ul>
+  </div>
+  <div class="about__portrait" aria-hidden="true">
+    <!-- Owner: swap this placeholder for a portrait photo. -->
+    <svg viewBox="0 0 300 360" role="img" aria-label="Portrait placeholder">
+      <rect width="300" height="360" fill="#ffffff"/>
+      <rect x="1" y="1" width="298" height="358" fill="none" stroke="#1a1917" stroke-opacity="0.15" stroke-width="2"/>
+      <circle cx="150" cy="140" r="52" fill="none" stroke="#1a1917" stroke-opacity="0.35" stroke-width="2"/>
+      <path d="M70 300 Q 150 210 230 300" fill="none" stroke="#1a1917" stroke-opacity="0.35" stroke-width="2"/>
+      <text x="150" y="336" text-anchor="middle" font-family="Consolas, monospace" font-size="13" fill="#a84a28" letter-spacing="2">PORTRAIT — REPLACE</text>
+    </svg>
+  </div>
+</section>
+
+<section class="contact" id="contact">
+  <p class="contact__eyebrow">Contact</p>
+  <h2 class="contact__title">Have a parametric problem?</h2>
+  <p class="contact__text">
+    [Placeholder — replace.] Open to collaborations, facade and structure
+    consulting, and Grasshopper development work.
+  </p>
+  <a class="contact__cta" href="mailto:emmanuelajibade751@gmail.com">
+    emmanuelajibade751@gmail.com
+  </a>
+</section>
+
+<style>
+  .about {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 3rem;
+    align-items: flex-start;
+    max-width: 1100px;
+    margin: 7rem auto;
+    padding: 0 1.5rem;
+  }
+
+  .about__text {
+    flex: 1 1 460px;
+    max-width: 640px;
+  }
+
+  .about__eyebrow,
+  .contact__eyebrow {
+    margin: 0 0 0.75rem;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--color-accent-deep);
+  }
+
+  .about__title,
+  .contact__title {
+    margin: 0 0 1.2rem;
+    font-size: clamp(1.6rem, 3.5vw, 2.2rem);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+  }
+
+  .about__text p {
+    margin: 0 0 1rem;
+    line-height: 1.7;
+    color: var(--color-ink-soft);
+  }
+
+  .about__skills {
+    list-style: none;
+    margin: 1.5rem 0 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .about__skills li {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 0.25rem 0.6rem;
+    border: 1px solid var(--color-grid-line);
+    color: var(--color-ink-soft);
+  }
+
+  .about__portrait {
+    flex: 0 0 260px;
+  }
+
+  .about__portrait svg {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  .contact {
+    max-width: 1100px;
+    margin: 7rem auto;
+    padding: 0 1.5rem;
+  }
+
+  .contact__text {
+    margin: 0 0 1.5rem;
+    max-width: 52ch;
+    line-height: 1.7;
+    color: var(--color-ink-soft);
+  }
+
+  .contact__cta {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: 0.95rem;
+    letter-spacing: 0.04em;
+    padding: 0.8rem 1.4rem;
+    border: 1px solid var(--color-fg);
+    color: var(--color-fg);
+    text-decoration: none;
+    transition:
+      background-color 0.25s ease,
+      color 0.25s ease,
+      border-color 0.25s ease;
+  }
+
+  .contact__cta:hover,
+  .contact__cta:focus-visible {
+    background: var(--color-accent);
+    border-color: var(--color-accent);
+    color: #fbfaf8;
+  }
+</style>

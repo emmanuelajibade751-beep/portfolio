@@ -1,0 +1,40 @@
+---
+/**
+ * Shared page shell: head/meta, nav, footer. Every page uses this so
+ * SEO tags and chrome live in exactly one place.
+ */
+import "../styles/global.css";
+import SiteNav from "../components/SiteNav.astro";
+import SiteFooter from "../components/SiteFooter.astro";
+
+interface Props {
+  title: string;
+  description: string;
+}
+
+const { title, description } = Astro.props;
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#fbfaf8" />
+    <!-- Open Graph (og:image intentionally absent — needs a raster asset;
+         flagged in the night log for the owner to supply). -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <title>{title}</title>
+  </head>
+  <body>
+    <SiteNav />
+    <main>
+      <slot />
+    </main>
+    <SiteFooter />
+  </body>
+</html>

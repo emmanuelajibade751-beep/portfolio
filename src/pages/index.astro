@@ -1,36 +1,33 @@
 ---
-import "../styles/global.css";
+import Base from "../layouts/Base.astro";
 import DotGridHero from "../components/DotGridHero.astro";
+import WorkCatalogue from "../components/WorkCatalogue.astro";
 import SvgMorphMotif from "../components/SvgMorphMotif.astro";
 import FlowField from "../components/FlowField.astro";
 import ParametricPlayground from "../components/ParametricPlayground.astro";
-import WorkCatalogue from "../components/WorkCatalogue.astro";
+import AboutContact from "../components/AboutContact.astro";
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Computational Design Portfolio</title>
-	</head>
-	<body>
-		<!-- Cursor-reactive dot grid -->
-		<DotGridHero />
+<Base
+	title="Emmanuel Ajibade — Computational Design Portfolio"
+	description="Computational design portfolio: parametric facades, form-found structures and generative massing, built with Rhino, Grasshopper and C#."
+>
+	<!-- Cursor-reactive dot grid -->
+	<DotGridHero />
 
-		<!-- The portfolio itself: content-collection driven catalogue.
-		     Placed directly after the hero — work first, garnish after. -->
-		<WorkCatalogue />
+	<!-- The portfolio itself: content-collection driven catalogue.
+	     Placed directly after the hero — work first, garnish after. -->
+	<WorkCatalogue />
 
-		<!-- Self-drawing wireframe that morphs between parametric forms -->
-		<SvgMorphMotif />
+	<!-- Self-drawing wireframe that morphs between parametric forms -->
+	<SvgMorphMotif />
 
-		<!-- Simplex-noise flow field -->
-		<FlowField />
+	<!-- Simplex-noise flow field -->
+	<FlowField />
 
-		<!-- Lloyd-relaxation Voronoi field, driven by visitor-facing sliders -->
-		<ParametricPlayground />
-	</body>
-</html>
+	<!-- Lloyd-relaxation Voronoi field, driven by visitor-facing sliders -->
+	<ParametricPlayground />
+
+	<!-- About + contact (owner-editable placeholder copy) -->
+	<AboutContact />
+</Base>

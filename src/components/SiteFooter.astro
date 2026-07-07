@@ -1,0 +1,57 @@
+---
+const year = new Date().getFullYear();
+---
+
+<footer class="footer">
+  <p class="footer__name">Emmanuel Ajibade</p>
+  <p class="footer__role">Computational designer — Rhino / Grasshopper / C#</p>
+  <p class="footer__contact">
+    <a href="mailto:emmanuelajibade751@gmail.com">emmanuelajibade751@gmail.com</a>
+  </p>
+  <p class="footer__legal">© {year}</p>
+</footer>
+
+<style>
+  .footer {
+    max-width: 1100px;
+    margin: 6rem auto 0;
+    padding: 2.5rem 1.5rem 3rem;
+    border-top: 1px solid var(--color-grid-line);
+  }
+
+  .footer__name {
+    margin: 0 0 0.25rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+
+  .footer__role {
+    margin: 0 0 1rem;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    letter-spacing: 0.06em;
+    color: var(--color-ink-soft);
+  }
+
+  .footer__contact {
+    margin: 0 0 1.2rem;
+  }
+
+  .footer__contact a {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    color: var(--color-accent-deep);
+    text-decoration: none;
+  }
+
+  .footer__contact a:hover,
+  .footer__contact a:focus-visible {
+    text-decoration: underline;
+  }
+
+  .footer__legal {
+    margin: 0;
+    font-size: 0.8rem;
+    color: var(--color-ink-soft);
+  }
+</style>

@@ -6,7 +6,9 @@ stopped. Read this file top to bottom, then skim
 `01_skills_roadmap.md` (the plan being followed) and
 `02_build_history.md` (how each piece was built and what was decided).
 The `night-run/` folder holds the plan/logs/summary of the overnight
-conversion, verbatim.
+conversion, verbatim ("night run" = an unattended queue of numbered jobs
+that Claude executed overnight while the owner slept; each job has a spec
+`NN_name.md` and an execution log `NN_name.log.md`).
 
 ## What this project is
 
@@ -69,11 +71,17 @@ Plus `SiteNav`/`SiteFooter` via `layouts/Base.astro`; detail pages at
 3. **TDZ hazard (bitten twice!):** `createResponsiveCanvas`'s resize
    callback fires SYNCHRONOUSLY during construction. Any state it reads
    must be declared BEFORE the `createResponsiveCanvas(...)` call.
+   (TDZ = temporal dead zone: reading a `let`/`const` binding before its
+   declaration has executed throws a ReferenceError at runtime — and the
+   synchronous callback does exactly that if the state is declared below
+   the call.)
 4. **Non-null re-bind pattern:** TS narrowing doesn't flow into hoisted
    functions — after a null guard, re-bind (`const el: T = maybeEl;`) and
    use the re-bound name inside closures (see canvas.ts,
    ParametricPlayground).
-5. **Deterministic artwork:** seeded PRNG (`mulberry32` in lib/lloyd.ts),
+5. **Deterministic artwork:** seeded PRNG (`mulberry32` in lib/lloyd.ts —
+   a tiny fast seeded random-number generator, so the same seed always
+   yields the same artwork),
    never bare `Math.random()` for signature visuals. Side benefit: pixel
    counts are stable, so a canvas pixel-count probe doubles as a
    regression test.
@@ -97,7 +105,8 @@ Plus `SiteNav`/`SiteFooter` via `layouts/Base.astro`; detail pages at
 ## Working style the owner expects
 
 - **Sweep-then-fix rhythm:** after building a feature, the owner runs
-  `/sweep` (multi-angle review with cheap-model subagents: correctness /
+  `/sweep` (a custom Claude Code skill from the owner's workshop setup,
+  not a built-in: multi-angle review with cheap-model subagents: correctness /
   completeness / clarity / risk), expects a synthesized punch list
   (fix now / fix later / not a problem), approves, then fixes are applied
   with re-verification. Several "bugs" from review agents were FALSE

@@ -2,10 +2,13 @@
  * F4 — Parametric easing math.
  *
  * `structuralSag` is the site's one signature motion curve: slow load,
- * quick release, small overshoot before settling — reused everywhere
- * (hover states, panel opens, the 3D model's rotation snap) instead of
- * a different CSS easing on every element. Same idea as reusing one
- * graph-mapper curve across a Grasshopper definition.
+ * quick release, small overshoot before settling. The intent is to reuse
+ * it for every micro-interaction (hover states, panel opens, rotation
+ * snaps) instead of a different CSS easing on every element — same idea
+ * as reusing one graph-mapper curve across a Grasshopper definition.
+ * Currently it has no consumer (its demo section was removed in the
+ * portfolio conversion); it is kept deliberately as the house curve for
+ * future micro-interactions.
  */
 
 export function lerp(start: number, end: number, t: number): number {

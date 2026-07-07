@@ -4,6 +4,11 @@ Personal portfolio for a computational designer (Rhino / Grasshopper / C#).
 Astro 7, static output, no client framework — interactive scenes are plain
 TypeScript in Astro component `<script>` blocks.
 
+**New session? Read `docs/session-history/00_HANDOFF.md` FIRST** — it
+carries the full context of how this site was built (skills roadmap,
+build history, conventions, night-conversion logs) so you can continue
+exactly where the last session stopped.
+
 ## Development
 
 Dev server (background mode per Astro CLI): `astro dev --background`

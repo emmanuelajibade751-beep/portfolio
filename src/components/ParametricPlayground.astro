@@ -45,11 +45,30 @@
   import { createResponsiveCanvas } from "../lib/canvas";
   import { lerp } from "../lib/easing";
   import { relaxationSnapshots } from "../lib/lloyd";
+  import { onViewportPresence } from "../lib/visibility";
 
   const canvas = document.getElementById("playground-canvas") as HTMLCanvasElement | null;
   const paneHost = document.getElementById("playground-pane");
 
   if (canvas && paneHost) {
+    // Non-null re-binds: narrowing from the guard doesn't flow into the
+    // hoisted init() declaration below (same pattern as canvas.ts).
+    const canvasEl: HTMLCanvasElement = canvas;
+    const paneHostEl: HTMLElement = paneHost;
+
+    // Lazy init (job 07): the ~44ms relaxation solve and the Tweakpane
+    // construction wait until the section first nears the viewport, keeping
+    // that cost off the initial page load. The 400px margin means setup
+    // completes before the visitor actually arrives; the section has a
+    // fixed height, so nothing shifts.
+    const stopWatching = onViewportPresence(canvasEl, 400, (visible) => {
+      if (visible) {
+        stopWatching(); // one-shot
+        init();
+      }
+    });
+
+    function init() {
     const STEPS = 36;
     const SPACE_W = 1000;
     const SPACE_H = 620;
@@ -78,7 +97,7 @@
     let vh = 0;
     let ready = false;
 
-    const surface = createResponsiveCanvas(canvas, ({ width, height }) => {
+    const surface = createResponsiveCanvas(canvasEl, ({ width, height }) => {
       vw = width;
       vh = height;
       if (ready) render();
@@ -135,7 +154,7 @@
     }
 
     // --- Controls -----------------------------------------------------------
-    const pane = new Pane({ container: paneHost, title: "Parameters" });
+    const pane = new Pane({ container: paneHostEl, title: "Parameters" });
 
     pane
       .addBinding(params, "cells", { min: 20, max: 320, step: 1, label: "cell count" })
@@ -161,6 +180,7 @@
 
     ready = true;
     render();
+    }
   }
 </script>
 

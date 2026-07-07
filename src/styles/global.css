@@ -58,17 +58,13 @@ body {
 }
 
 /* ---------------------------------------------------------------------
-   Reduced-motion architecture (F2)
+   Reduced-motion architecture
 
-   Default posture: motion is allowed. Anything that plays a continuous
-   or decorative animation must also define its [data-motion="reduced"]
-   state here, next to the animated rule, not bolted on separately.
+   This blanket rule silences CSS transitions/animations. Canvas and SVG
+   scenes are gated separately in JS (each scene checks matchMedia via
+   lib/reduced-motion.ts, stops its loop, and draws a static pose) — this
+   rule cannot reach a rAF loop, so both layers are needed.
    --------------------------------------------------------------------- */
-[data-motion="reduced"] .motion-demo__icon {
-  transition: none;
-  animation: none;
-}
-
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

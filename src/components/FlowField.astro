@@ -27,6 +27,7 @@
   import { createLoop } from "../lib/loop";
   import { detectDeviceTier, particleBudget } from "../lib/device-tier";
   import { prefersReducedMotion, onReducedMotionChange } from "../lib/reduced-motion";
+  import { onViewportPresence } from "../lib/visibility";
 
   const canvas = document.getElementById("flow-field") as HTMLCanvasElement | null;
 
@@ -60,14 +61,21 @@
     // from that first synchronous callback.
     let vw = 0;
     let vh = 0;
-    let ready = false;
+    // Declared before surface creation: the synchronous first resize
+    // callback below reads `initialized` (TDZ hazard otherwise).
+    let initialized = false;
+    let inView = false;
 
     const surface = createResponsiveCanvas(canvas, ({ width, height }) => {
       vw = width;
       vh = height;
-      initParticles();
-      // A resize clears the backing store; repaint the static pose by hand.
-      if (ready && prefersReducedMotion()) renderStatic();
+      // Respawn/repaint only once the scene has lazily initialized —
+      // before that there's nothing on the canvas to preserve.
+      if (initialized) {
+        initParticles();
+        // A resize clears the backing store; repaint the static pose by hand.
+        if (prefersReducedMotion()) renderStatic();
+      }
     });
     const ctx = surface.ctx;
 
@@ -145,19 +153,27 @@
       ctx.stroke();
     }
 
-    function applyMotion(reduced: boolean) {
-      if (reduced) {
-        loop.stop();
-        renderStatic();
-      } else {
+    // Lazy init + visibility gating: particles spawn when the section first
+    // nears the viewport, and the loop only runs while it's on screen.
+    function updateMotionState() {
+      const reduced = prefersReducedMotion();
+      if (initialized && inView && !reduced) {
         loop.start();
+      } else {
+        loop.stop();
       }
+      if (initialized && reduced) renderStatic();
     }
 
-    initParticles();
-    ready = true;
-    applyMotion(prefersReducedMotion());
-    onReducedMotionChange(applyMotion);
+    onViewportPresence(canvas, 200, (visible) => {
+      inView = visible;
+      if (visible && !initialized) {
+        initialized = true;
+        initParticles();
+      }
+      updateMotionState();
+    });
+    onReducedMotionChange(updateMotionState);
   }
 </script>
 

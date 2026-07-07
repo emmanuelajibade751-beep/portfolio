@@ -27,6 +27,7 @@
   import { createLoop } from "../lib/loop";
   import { lerp, smoothstep } from "../lib/easing";
   import { prefersReducedMotion, onReducedMotionChange } from "../lib/reduced-motion";
+  import { onViewportPresence } from "../lib/visibility";
 
   const canvas = document.getElementById("dot-grid") as HTMLCanvasElement | null;
 
@@ -136,18 +137,28 @@
 
     // F2 — reduced motion is the hard gate. When on, the loop never runs and
     // we paint a single static frame; toggling the OS setting flips live.
-    function applyMotion(reduced: boolean) {
-      if (reduced || !finePointer) {
+    // Additionally (job 07): the loop pauses while the hero is scrolled out
+    // of view, so it stops costing CPU once the visitor is reading below.
+    let inView = true; // hero starts on screen; observer corrects if not
+
+    function updateMotionState() {
+      if (prefersReducedMotion() || !finePointer) {
         loop.stop();
         renderStatic();
-      } else {
+      } else if (inView) {
         loop.start();
+      } else {
+        loop.stop();
       }
     }
 
     ready = true;
-    applyMotion(prefersReducedMotion());
-    onReducedMotionChange(applyMotion);
+    updateMotionState();
+    onViewportPresence(canvas, 100, (visible) => {
+      inView = visible;
+      updateMotionState();
+    });
+    onReducedMotionChange(updateMotionState);
   }
 </script>
 

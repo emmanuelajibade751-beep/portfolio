@@ -34,6 +34,7 @@
   import { createLoop } from "../lib/loop";
   import { clamp01, smoothstep } from "../lib/easing";
   import { prefersReducedMotion, onReducedMotionChange } from "../lib/reduced-motion";
+  import { onViewportPresence } from "../lib/visibility";
 
   const maybePath = document.getElementById("motif-path") as SVGPathElement | null;
 
@@ -155,21 +156,32 @@
       path.style.strokeDashoffset = "0";
     }
 
-    function applyMotion(reduced: boolean) {
-      if (reduced) {
+    // Visibility gating (job 07): the loop pauses while the section is
+    // offscreen. `elapsed` accumulates only while running, so on re-entry
+    // the cycle resumes where it paused rather than jumping.
+    let inView = false;
+
+    function updateMotionState() {
+      if (prefersReducedMotion()) {
         loop.stop();
         renderStatic();
-      } else {
-        // renderStatic() may have cleared the dash mask, so if the loop
-        // resumes inside the entrance window the mask must be rebuilt.
+        // renderStatic() wipes the dash mask — rebuild entrance state
+        // whenever motion later resumes.
         drawnEntrance = false;
         entranceInit = false;
+      } else if (inView) {
         loop.start();
+      } else {
+        loop.stop();
       }
     }
 
-    applyMotion(prefersReducedMotion());
-    onReducedMotionChange(applyMotion);
+    updateMotionState();
+    onViewportPresence(path.closest("section") ?? path, 200, (visible) => {
+      inView = visible;
+      updateMotionState();
+    });
+    onReducedMotionChange(updateMotionState);
   }
 </script>
 

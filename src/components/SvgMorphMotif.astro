@@ -97,8 +97,8 @@
 
     // --- Timing -----------------------------------------------------------
     const ENTRANCE = 1.1; // seconds to draw the first outline (F6)
-    const MORPH = 1.4; // seconds per shape-to-shape morph
-    const HOLD = 1.1; // seconds to rest on each shape
+    const MORPH = 1.6; // seconds per shape-to-shape morph
+    const HOLD = 3.2; // rest long enough that the change is an event, not a churn
     const PER = MORPH + HOLD;
     const CYCLE = PER * shapes.length;
 

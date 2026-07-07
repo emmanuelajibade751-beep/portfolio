@@ -24,14 +24,16 @@ export function detectDeviceTier(): DeviceTier {
   return "low";
 }
 
-/** Particle count per tier for the flow field. Tune here, not at call sites. */
+/** Particle count per tier for the flow field. Tune here, not at call sites.
+ * Deliberately conservative: on a portfolio the field is an accent texture,
+ * not a spectacle (tuned down from 220/600/1200 in the demo era). */
 export function particleBudget(tier: DeviceTier): number {
   switch (tier) {
     case "low":
-      return 220;
+      return 140;
     case "mid":
-      return 600;
+      return 380;
     case "high":
-      return 1200;
+      return 700;
   }
 }

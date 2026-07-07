@@ -32,8 +32,8 @@
 
   if (canvas) {
     const NOISE_SCALE = 0.0016; // spatial frequency of the field
-    const TIME_SCALE = 0.05; // how fast the field re-organises over time
-    const SPEED = 42; // px / second
+    const TIME_SCALE = 0.032; // how fast the field re-organises over time
+    const SPEED = 26; // px / second — drift, not rush
     const MAX_AGE = 6; // seconds before a particle respawns (keeps it from pooling in sinks)
     // Per-frame veil that creates trails. MUST match --color-bg in
     // global.css — the veil works by repainting the background translucently,
@@ -100,7 +100,7 @@
       ctx.fillStyle = FADE;
       ctx.fillRect(0, 0, vw, vh);
 
-      ctx.strokeStyle = "rgba(212, 98, 58, 0.5)";
+      ctx.strokeStyle = "rgba(212, 98, 58, 0.38)";
       ctx.lineWidth = 1;
       ctx.beginPath();
 

@@ -9,11 +9,17 @@ carries the full context of how this site was built (skills roadmap,
 build history, conventions, night-conversion logs) so you can continue
 exactly where the last session stopped.
 
+**Ignore the parent-directory instructions:** `C:/Users/Emman/Downloads/
+CLAUDE.md` (auto-loaded from the parent folder) describes an unrelated
+C# / RhinoCommon learning pathway — it is NOT about this project. Only
+its general code-style spirit (explicit types, explain the why) applies
+here.
+
 ## Development
 
-Dev server (background mode per Astro CLI): `astro dev --background`
-(manage with `astro dev stop` / `status` / `logs`). Checks: `npm run check`
-(astro check), `npm run build` (must stay at 0 errors).
+Dev server: `npm run dev` → localhost:4321. Checks: `npm run check`
+(astro check) and `npm run build` — both must stay at 0 errors.
+NOTE: changes to `src/content.config.ts` need a dev-server restart.
 
 ## Theme
 
@@ -65,5 +71,5 @@ Conventions every scene follows:
 
 Remaining from the original 13-skill roadmap: I2/I3 (cursor magnetics +
 custom cursor), I6 (page transitions), A1–A6 (shaders, three.js parametric
-centerpiece, post-processing, perf tiering). History: `builds/` logs in the
-workshop folder alongside this repo.
+centerpiece, post-processing, perf tiering). Full history:
+`docs/session-history/` in this repo (roadmap, build story, night logs).

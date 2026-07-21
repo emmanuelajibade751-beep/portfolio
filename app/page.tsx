@@ -385,10 +385,10 @@ export default function Home() {
           <span>Portfolio / 2026</span>
         </div>
         <HeroField />
-        <div className="hero-title" aria-label="Design across systems">
+        <h1 className="hero-title" aria-label="Design across systems">
           <div>DESIGN <em>↘</em></div>
           <div>ACROSS SYSTEMS</div>
-        </div>
+        </h1>
         <div className="hero-bottom">
           <p>
             I connect <strong>architectural intent, structural buildability and computational intelligence</strong>—from first sketch to working system.

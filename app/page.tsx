@@ -369,7 +369,7 @@ export default function Home() {
     <main>
       <header className="site-header">
         <a className="brand" href="#top" aria-label="Sunday Emmanuel Ajibade home"><span>✦</span> Sunday Emmanuel Ajibade</a>
-        <div className="header-status"><i /> Architect · Computational Designer</div>
+        <div className="header-status"><i /> Civil Engineering · Computational Design</div>
         <nav aria-label="Primary navigation">
           <a href="#work">Work</a>
           <a href="#research">Research</a>
@@ -377,17 +377,17 @@ export default function Home() {
           <a href="#lab">Lab</a>
           <a href="#profile">About</a>
         </nav>
-        <a className="contact-link" href="mailto:emmanuelajibade751@gmail.com">Contact <span>↗</span></a>
+        <a className="contact-link" href="mailto:emmanuelajibade751@gmail.com">Contact <span>↗︎</span></a>
       </header>
 
       <section className="hero" id="top">
         <div className="hero-kicker">
-          <span>Architecture · Structures · Computation · Research</span>
+          <span>Civil Engineering · Structures · Computation · Research</span>
           <span>Portfolio / 2026</span>
         </div>
         <HeroField />
         <h1 className="hero-title" aria-label="Design across systems">
-          <div>DESIGN <em>↘</em></div>
+          <div>DESIGN <em>↘︎</em></div>
           <div>ACROSS SYSTEMS</div>
         </h1>
         <div className="hero-bottom">
@@ -395,7 +395,7 @@ export default function Home() {
             I connect <strong>architectural intent, structural buildability and computational intelligence</strong>—from first sketch to working system.
           </p>
           <a href="#work" className="round-link" aria-label="Explore selected work">↓</a>
-          <div className="hero-meta"><span>SUNDAY EMMANUEL AJIBADE</span><b>LAGOS / GLOBAL</b></div>
+          <div className="hero-meta"><span>UNIVERSITY OF IBADAN</span><b>IBADAN / NIGERIA</b></div>
         </div>
       </section>
 
@@ -406,7 +406,7 @@ export default function Home() {
           <br /><em>built to be felt.</em>
         </p>
         <div className="manifesto-side">
-          Architecture, structural detailing, computation and research—connected by a hands-on, systems-driven approach.
+          Civil engineering, architectural exploration, computation and research—connected by a hands-on, systems-driven approach.
         </div>
         <div className="practice-grid" aria-label="Practice areas">
           {practiceAreas.map(([index, title, text, target]) => (
@@ -417,7 +417,7 @@ export default function Home() {
                 document.getElementById("work")?.scrollIntoView({ behavior: "smooth" });
               }}
             >
-              <span>{index}</span><strong>{title}</strong><small>{text}</small><i>↘</i>
+              <span>{index}</span><strong>{title}</strong><small>{text}</small><i>↘︎</i>
             </button>
           ))}
         </div>
@@ -457,7 +457,7 @@ export default function Home() {
                 <h3>{project.title}</h3>
                 <div><span>{project.location}</span><span>{project.year}</span></div>
               </div>
-              <div className="project-open">↗</div>
+              <div className="project-open">↗︎</div>
             </button>
           ))}
         </div>
@@ -481,8 +481,16 @@ export default function Home() {
           <img
             src="/research/subtractive-city/truckload-urbanism.jpg"
             alt="Satellite mapping study comparing distributed land reclamation across Lagos with Eko Atlantic"
+            width="2000"
+            height="710"
+            loading="lazy"
+            decoding="async"
           />
-          <figcaption><span>01 / TERRITORY</span> Truckload Urbanism — reading reclamation as a city-scale material system.</figcaption>
+          <figcaption>
+            <span>01 / TERRITORY</span>
+            <span>Truckload Urbanism — reading reclamation as a city-scale material system.</span>
+            <a href="/research/subtractive-city/truckload-urbanism.jpg" target="_blank" rel="noreferrer">View full plate ↗︎</a>
+          </figcaption>
         </figure>
 
         <div className="research-thesis reveal">
@@ -509,11 +517,11 @@ export default function Home() {
 
         <div className="research-pair reveal">
           <figure>
-            <img src="/research/subtractive-city/archipelago-before.jpg" alt="Existing Lagos lagoon and bridge condition" />
+            <img src="/research/subtractive-city/archipelago-before.jpg" alt="Existing Lagos lagoon and bridge condition" width="1600" height="1066" loading="lazy" decoding="async" />
             <figcaption><span>BEFORE</span> The lagoon as dividing line</figcaption>
           </figure>
           <figure>
-            <img src="/research/subtractive-city/archipelago-after.jpg" alt="Speculative proposal for an inhabited Lagos archipelago" />
+            <img src="/research/subtractive-city/archipelago-after.jpg" alt="Speculative proposal for an inhabited Lagos archipelago" width="1264" height="843" loading="lazy" decoding="async" />
             <figcaption><span>AMPLIFIED</span> The Archipelago</figcaption>
           </figure>
         </div>
@@ -522,16 +530,16 @@ export default function Home() {
           <div className="research-gallery-intro">
             <span className="section-code">THE NEW LAGOS / AMPLIFICATIONS</span>
             <h3>Not solutions dropped from above. Existing intelligence, made spatial.</h3>
-            <p>Five scenes translate the research into civic propositions across water, learning, exchange and culture.</p>
+            <p>Five propositions translate the research into civic space across water, learning, exchange and culture.</p>
           </div>
           {[
-            ["green-makoko.jpg", "Green Makoko", "Productive landscapes on water"],
-            ["school-over-makoko.jpg", "School over Makoko", "Learning as shared infrastructure"],
-            ["pattern-junction.jpg", "Pattern Junction", "Street commerce as civic plan"],
-            ["transmitter.jpg", "The Transmitter", "Nollywood as urban institution"],
-          ].map(([image, title, caption], index) => (
+            ["green-makoko.jpg", "Green Makoko", "Productive landscapes on water", 1264, 843],
+            ["school-over-makoko.jpg", "School over Makoko", "Learning as shared infrastructure", 1365, 768],
+            ["pattern-junction.jpg", "Pattern Junction", "Street commerce as civic plan", 1488, 714],
+            ["transmitter.jpg", "The Transmitter", "Nollywood as urban institution", 1424, 746],
+          ].map(([image, title, caption, width, height], index) => (
             <figure className={`research-gallery-item item-${index + 1}`} key={title}>
-              <img src={`/research/subtractive-city/${image}`} alt={`${title} speculative urban proposal`} />
+              <img src={`/research/subtractive-city/${image}`} alt={`${title} speculative urban proposal`} width={width} height={height} loading="lazy" decoding="async" />
               <figcaption><span>{String(index + 1).padStart(2, "0")}</span><b>{title}</b><small>{caption}</small></figcaption>
             </figure>
           ))}
@@ -542,7 +550,7 @@ export default function Home() {
           <div><span>PUBLICATION</span><strong>LLL Laboratory / Lex te Loo Architects</strong></div>
           <div><span>TEAM</span><strong>Seven-person international research studio</strong></div>
           <a href="https://lexteloo.com/think-tank/research/the-subtractive-city" target="_blank" rel="noreferrer">
-            Read the full research <span>↗</span>
+            Read the full research <span>↗︎</span>
           </a>
         </div>
       </section>
@@ -567,7 +575,7 @@ export default function Home() {
             ["04", "AI + Research", "Vibe coding, plugins, workflows, mapping, publications"],
           ].map(([index, title, text]) => (
             <div className="capability-row" key={index}>
-              <span>{index}</span><h3>{title}</h3><p>{text}</p><i>↗</i>
+              <span>{index}</span><h3>{title}</h3><p>{text}</p><i>↗︎</i>
             </div>
           ))}
         </div>
@@ -601,28 +609,28 @@ export default function Home() {
             <div className="section-code">[ 06 / PROFILE ]</div>
             <h2>Generalist by range.<br />Specialist by depth.</h2>
             <p className="profile-lead">
-              I’m an architect and computational designer connecting architectural intent with structural buildability.
+              I’m a Civil Engineering student at the University of Ibadan, connecting structural thinking with computational design and urban research.
             </p>
             <p>
-              I work across parametric facade systems, structural detailing, urban research and AI-assisted design workflows—moving between Grasshopper definitions, connection details and research papers as one integrated practice.
+              Based in Ibadan, I work across parametric facade systems, structural detailing, urban research and AI-assisted design workflows—moving between Grasshopper definitions, connection details and research papers as one integrated practice.
             </p>
             <div className="profile-facts">
+              <div><span>EDUCATION</span><b>Civil Engineering · University of Ibadan</b></div>
+              <div><span>BASE</span><b>Ibadan, Nigeria</b></div>
               <div><span>TOOLS</span><b>Rhino / Grasshopper / C#</b></div>
-              <div><span>FOCUS</span><b>Design + Buildability</b></div>
-              <div><span>MODE</span><b>Research + Prototyping</b></div>
             </div>
           </div>
         </div>
       </section>
 
       <section className="contact-section">
-        <div className="contact-top"><span>Open to design, structural, computational and research collaborations.</span><span>Lagos / Global</span></div>
+        <div className="contact-top"><span>Open to design, structural, computational and research collaborations.</span><span>Ibadan / Nigeria</span></div>
         <a href="mailto:emmanuelajibade751@gmail.com" className="contact-cta">
-          LET’S WORK <span>↗</span>
+          LET’S WORK <span>↗︎</span>
         </a>
         <div className="contact-footer">
           <span>© 2026 Sunday Emmanuel Ajibade</span>
-          <span>Architect · Computational Designer · Researcher</span>
+          <span>Civil Engineering Student · Computational Designer · Researcher</span>
           <a href="#top">Back to top ↑</a>
         </div>
       </section>

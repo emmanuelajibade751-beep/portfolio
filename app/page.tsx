@@ -18,86 +18,86 @@ type Project = {
 
 const projects: Project[] = [
   {
-    id: "adaptive-civic",
+    id: "parametric-facade",
     index: "01",
-    title: "Adaptive Civic Canopy",
-    category: "Architecture",
+    title: "Parametric Facade Study",
+    category: "Computational Design",
     year: "2026",
-    location: "Lagos, NG",
+    location: "Design Study",
     summary:
-      "A porous civic roof that turns solar exposure, rainfall and footfall into a responsive public microclimate.",
-    impact: "38% less peak solar gain",
-    tools: ["Rhino", "Grasshopper", "Ladybug", "Python"],
+      "An attractor-driven panel system exploring how environmental input, repetition and controlled variation can shape a building envelope.",
+    impact: "400-panel elevation system",
+    tools: ["Rhino", "Grasshopper", "C#", "Panelization"],
     visual: "canopy",
     size: "wide",
   },
   {
-    id: "delta-link",
+    id: "canopy-structure",
     index: "02",
-    title: "Delta Link",
+    title: "Canopy Structure Form-Finding",
     category: "Civil Systems",
-    year: "2025",
-    location: "Niger Delta, NG",
+    year: "2026",
+    location: "Structural Study",
     summary:
-      "A low-carbon pedestrian crossing system optimized for flood cycles, local fabrication and staged assembly.",
-    impact: "22% embodied-carbon reduction",
-    tools: ["Karamba3D", "ETABS", "GIS", "Life-cycle analysis"],
+      "A radial rib canopy with relaxed tension rings, developed through iterative form-finding and load-path studies.",
+    impact: "Radial rib + tension ring logic",
+    tools: ["Karamba3D", "Grasshopper", "Load paths", "Detailing"],
     visual: "bridge",
     size: "standard",
   },
   {
-    id: "site-intelligence",
+    id: "rhino-intelligence",
     index: "03",
-    title: "Site Intelligence Engine",
+    title: "Rhino Intelligence Toolkit",
     category: "AI Research",
     year: "2026",
-    location: "Research",
+    location: "Tool Development",
     summary:
-      "A multimodal research agent that reads planning documents, site imagery and climate data to surface design risks early.",
-    impact: "4.6× faster option review",
-    tools: ["Vision models", "RAG", "Python", "Geospatial data"],
+      "A growing family of AI-assisted design workflows and Rhino tools for repetitive geometry, documentation and project intelligence.",
+    impact: "Workflow prototype / in development",
+    tools: ["RhinoCommon", "C#", "AI agents", "Vibe coding"],
     visual: "intelligence",
     size: "tall",
   },
   {
-    id: "market-fabric",
+    id: "urban-research",
     index: "04",
-    title: "Market Fabric 2.0",
+    title: "Urban Interfaces",
     category: "Urban Research",
-    year: "2025",
-    location: "Accra, GH",
+    year: "2025—26",
+    location: "Research Archive",
     summary:
-      "A rules-based growth framework for informal markets that protects circulation, shade and social density.",
-    impact: "1,840 movement traces modeled",
-    tools: ["GIS", "Space syntax", "Agent simulation", "Field research"],
+      "Field observation, mapping and writing focused on how movement, informal exchange and public space shape fast-changing cities.",
+    impact: "Fieldwork + mapping + publication",
+    tools: ["QGIS", "Space syntax", "Mapping", "Research writing"],
     visual: "fabric",
     size: "standard",
   },
   {
-    id: "material-minimum",
+    id: "connection-atlas",
     index: "05",
-    title: "Material Minimum",
-    category: "Computational Design",
-    year: "2026",
-    location: "Prototype 03",
+    title: "Connection Atlas",
+    category: "Civil Systems",
+    year: "2025—26",
+    location: "Detail Library",
     summary:
-      "Topology-driven masonry shells that transfer structural intelligence into low-tech construction sequences.",
-    impact: "31% less material by volume",
-    tools: ["COMPAS", "Finite elements", "Robotic paths", "Fabrication"],
+      "A visual index of structural connections where architectural intent meets fabrication tolerance, sequence and buildability.",
+    impact: "Detail-led design system",
+    tools: ["Steel detailing", "Constructability", "BIM", "Technical drawing"],
     visual: "shell",
     size: "wide",
   },
   {
-    id: "heat-atlas",
+    id: "climate-intelligence",
     index: "06",
-    title: "Heat Atlas / 08°N",
-    category: "AI Research",
-    year: "2024—26",
-    location: "West Africa",
+    title: "Climate Intelligence / 08°N",
+    category: "Architecture",
+    year: "Next Study",
+    location: "Open Project Slot",
     summary:
-      "A machine-assisted atlas translating urban heat, surface material and canopy data into neighborhood-scale action.",
-    impact: "12 cities, one comparable model",
-    tools: ["Remote sensing", "ML", "QGIS", "Data storytelling"],
+      "A ready-made case-study slot for your next architectural project—complete with space for process, performance and final imagery.",
+    impact: "Ready for your work",
+    tools: ["Climate analysis", "Architecture", "Visualization", "Storytelling"],
     visual: "heat",
     size: "standard",
   },
@@ -110,6 +110,13 @@ const categories = [
   "Civil Systems",
   "AI Research",
   "Urban Research",
+];
+
+const practiceAreas = [
+  ["01", "Design", "Computational + architectural design", "Architecture"],
+  ["02", "Structure", "Connections, details, buildability", "Civil Systems"],
+  ["03", "Research", "Urban studies, mapping, publications", "Urban Research"],
+  ["04", "AI & Tools", "Vibe coding, plugins, workflows", "AI Research"],
 ];
 
 function HeroField() {
@@ -361,45 +368,57 @@ export default function Home() {
   return (
     <main>
       <header className="site-header">
-        <a className="brand" href="#top" aria-label="EM home">EM<span>—01</span></a>
-        <div className="header-status"><i /> Available for ambitious work</div>
+        <a className="brand" href="#top" aria-label="Sunday Emmanuel Ajibade home"><span>✦</span> Sunday Emmanuel Ajibade</a>
+        <div className="header-status"><i /> Architect · Computational Designer</div>
         <nav aria-label="Primary navigation">
           <a href="#work">Work</a>
+          <a href="#expertise">Expertise</a>
           <a href="#lab">Lab</a>
-          <a href="#profile">Profile</a>
+          <a href="#profile">About</a>
         </nav>
-        <a className="contact-link" href="mailto:hello@example.com">Start a project <span>↗</span></a>
+        <a className="contact-link" href="mailto:emmanuelajibade751@gmail.com">Contact <span>↗</span></a>
       </header>
 
       <section className="hero" id="top">
         <div className="hero-kicker">
-          <span>Architecture / Computation / Civil Systems / AI</span>
-          <span>Based in Lagos · Working globally</span>
+          <span>Architecture · Structures · Computation · Research</span>
+          <span>Portfolio / 2026</span>
         </div>
         <HeroField />
-        <div className="hero-title" aria-label="Built Intelligence">
-          <div>BUILT <em>↘</em></div>
-          <div>INTELLIGENCE</div>
+        <div className="hero-title" aria-label="Design across systems">
+          <div>DESIGN <em>↘</em></div>
+          <div>ACROSS SYSTEMS</div>
         </div>
         <div className="hero-bottom">
           <p>
-            I design <strong>buildings, systems and tools</strong> for a world where
-            physical and computational intelligence are inseparable.
+            I connect <strong>architectural intent, structural buildability and computational intelligence</strong>—from first sketch to working system.
           </p>
           <a href="#work" className="round-link" aria-label="Explore selected work">↓</a>
-          <div className="hero-meta"><span>PORTFOLIO</span><b>2024—26</b></div>
+          <div className="hero-meta"><span>SUNDAY EMMANUEL AJIBADE</span><b>LAGOS / GLOBAL</b></div>
         </div>
       </section>
 
       <section className="manifesto reveal">
         <div className="section-code">[ 00 / POSITION ]</div>
         <p>
-          Not architecture <i>or</i> engineering <i>or</i> AI.
-          <br />The interesting work lives <em>between them.</em>
+          Design across <i>methods,</i>
+          <br /><em>built to be felt.</em>
         </p>
         <div className="manifesto-side">
-          From first principle to finished narrative: research, modeling, simulation,
-          prototyping and communication in one connected practice.
+          Architecture, structural detailing, computation and research—connected by a hands-on, systems-driven approach.
+        </div>
+        <div className="practice-grid" aria-label="Practice areas">
+          {practiceAreas.map(([index, title, text, target]) => (
+            <button
+              key={title}
+              onClick={() => {
+                setCategory(target);
+                document.getElementById("work")?.scrollIntoView({ behavior: "smooth" });
+              }}
+            >
+              <span>{index}</span><strong>{title}</strong><small>{text}</small><i>↘</i>
+            </button>
+          ))}
         </div>
       </section>
 
@@ -452,15 +471,15 @@ export default function Home() {
         <ParametricLab />
       </section>
 
-      <section className="capabilities reveal">
+      <section className="capabilities reveal" id="expertise">
         <div className="section-code">[ 03 / CAPABILITY STACK ]</div>
         <h2>One practice.<br />Multiple resolutions.</h2>
         <div className="capability-list">
           {[
             ["01", "Architecture", "Spatial strategy, concept design, climate response, visualization"],
             ["02", "Computational Design", "Parametric systems, optimization, geometry, fabrication logic"],
-            ["03", "Civil Engineering", "Structural reasoning, infrastructure, constructability, performance"],
-            ["04", "AI + Research", "Agents, multimodal workflows, geospatial analysis, decision tools"],
+            ["03", "Structures", "Connections, detailing, constructability, load-path reasoning"],
+            ["04", "AI + Research", "Vibe coding, plugins, workflows, mapping, publications"],
           ].map(([index, title, text]) => (
             <div className="capability-row" key={index}>
               <span>{index}</span><h3>{title}</h3><p>{text}</p><i>↗</i>
@@ -491,34 +510,34 @@ export default function Home() {
         <div className="profile-grid reveal">
           <div className="profile-portrait" aria-label="Portrait placeholder ready for your photograph">
             <span>PORTRAIT / DROP IMAGE HERE</span>
-            <div className="portrait-mark">EM</div>
+            <div className="portrait-mark">SEA</div>
           </div>
           <div className="profile-copy">
             <div className="section-code">[ 05 / PROFILE ]</div>
             <h2>Generalist by range.<br />Specialist by depth.</h2>
             <p className="profile-lead">
-              I work across architecture, computational design, civil engineering and AI research—connecting disciplines that too often arrive in sequence.
+              I’m an architect and computational designer connecting architectural intent with structural buildability.
             </p>
             <p>
-              The aim is simple: ask better questions, build sharper models, and create work whose intelligence can be felt before it is explained.
+              I work across parametric facade systems, structural detailing, urban research and AI-assisted design workflows—moving between Grasshopper definitions, connection details and research papers as one integrated practice.
             </p>
             <div className="profile-facts">
-              <div><span>BASE</span><b>Lagos / Global</b></div>
-              <div><span>FOCUS</span><b>Built intelligence</b></div>
-              <div><span>MODE</span><b>Collaborative / Independent</b></div>
+              <div><span>TOOLS</span><b>Rhino / Grasshopper / C#</b></div>
+              <div><span>FOCUS</span><b>Design + Buildability</b></div>
+              <div><span>MODE</span><b>Research + Prototyping</b></div>
             </div>
           </div>
         </div>
       </section>
 
       <section className="contact-section">
-        <div className="contact-top"><span>Have a difficult problem?</span><span>Good.</span></div>
-        <a href="mailto:hello@example.com" className="contact-cta">
-          LET’S BUILD <span>↗</span>
+        <div className="contact-top"><span>Open to design, structural, computational and research collaborations.</span><span>Lagos / Global</span></div>
+        <a href="mailto:emmanuelajibade751@gmail.com" className="contact-cta">
+          LET’S WORK <span>↗</span>
         </a>
         <div className="contact-footer">
-          <span>© 2026 EM—01</span>
-          <span>Architecture · Computation · Civil Systems · AI</span>
+          <span>© 2026 Sunday Emmanuel Ajibade</span>
+          <span>Architect · Computational Designer · Researcher</span>
           <a href="#top">Back to top ↑</a>
         </div>
       </section>

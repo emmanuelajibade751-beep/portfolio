@@ -6,19 +6,19 @@ const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://em-built-intelligence.sites.openai.com"),
-  title: "EM—01 | Built Intelligence",
-  description: "Architecture, computational design, civil systems and AI research—one connected practice.",
+  metadataBase: new URL("https://em-built-intelligence.clever-bream-0221.chatgpt.site"),
+  title: "Sunday Emmanuel Ajibade | Architect & Computational Designer",
+  description: "Architecture, structural detailing, computational design and research—connected by a hands-on, systems-driven approach.",
   openGraph: {
-    title: "EM—01 | Built Intelligence",
-    description: "Ideas at the scale of cities. Precision at the scale of code.",
-    images: [{ url: "/og.png", width: 1792, height: 935, alt: "Built Intelligence portfolio" }],
+    title: "Sunday Emmanuel Ajibade | Design Across Systems",
+    description: "Architect · Computational Designer · Researcher",
+    images: [{ url: "/og-v2.png", width: 1792, height: 935, alt: "Sunday Emmanuel Ajibade — Design Across Systems" }],
   },
   twitter: {
     card: "summary_large_image",
-    title: "EM—01 | Built Intelligence",
-    description: "Architecture · Computation · Civil Systems · AI",
-    images: ["/og.png"],
+    title: "Sunday Emmanuel Ajibade | Design Across Systems",
+    description: "Architect · Computational Designer · Researcher",
+    images: ["/og-v2.png"],
   },
 };
 

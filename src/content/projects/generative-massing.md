@@ -6,6 +6,7 @@ tags: ["massing", "optioneering"]
 tools: ["Rhino", "Grasshopper", "C#"]
 cover: "./generative-massing-cover.svg"
 order: 3
+discipline: "design"
 ---
 
 **Placeholder — replace this write-up with your own.**

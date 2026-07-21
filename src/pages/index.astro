@@ -1,33 +1,31 @@
 ---
+/**
+ * Landing page — reads as a practice overview, not a project dump. The three
+ * signature canvas scenes (morph motif, flow field, parametric playground)
+ * moved to /design/: on the landing page they made the site read as a
+ * computational playground; here the PracticeStrip signals breadth first,
+ * then a curated FeaturedWork row, then about/contact.
+ */
 import Base from "../layouts/Base.astro";
 import DotGridHero from "../components/DotGridHero.astro";
-import WorkCatalogue from "../components/WorkCatalogue.astro";
-import SvgMorphMotif from "../components/SvgMorphMotif.astro";
-import FlowField from "../components/FlowField.astro";
-import ParametricPlayground from "../components/ParametricPlayground.astro";
+import PracticeStrip from "../components/PracticeStrip.astro";
+import FeaturedWork from "../components/FeaturedWork.astro";
 import AboutContact from "../components/AboutContact.astro";
 ---
 
 <Base
-	title="Sunday Emmanuel Ajibade — Computational Design Portfolio"
-	description="Computational design portfolio: parametric facades, form-found structures and generative massing, built with Rhino, Grasshopper and C#."
+  title="Sunday Emmanuel Ajibade — Architecture, Computation & Research"
+  description="Portfolio of Sunday Emmanuel Ajibade: architectural design, computational systems, structural detailing, research, and AI-assisted workflows."
 >
-	<!-- Cursor-reactive dot grid -->
-	<DotGridHero />
+  <!-- Cursor-reactive dot grid -->
+  <DotGridHero />
 
-	<!-- The portfolio itself: content-collection driven catalogue.
-	     Placed directly after the hero — work first, garnish after. -->
-	<WorkCatalogue />
+  <!-- Four discipline tiles — the fastest signal of practice breadth -->
+  <PracticeStrip />
 
-	<!-- Self-drawing wireframe that morphs between parametric forms -->
-	<SvgMorphMotif />
+  <!-- Curated cross-discipline work (featured: true), not the full catalogue -->
+  <FeaturedWork />
 
-	<!-- Simplex-noise flow field -->
-	<FlowField />
-
-	<!-- Lloyd-relaxation Voronoi field, driven by visitor-facing sliders -->
-	<ParametricPlayground />
-
-	<!-- About + contact (owner-editable placeholder copy) -->
-	<AboutContact />
+  <!-- About + contact -->
+  <AboutContact />
 </Base>

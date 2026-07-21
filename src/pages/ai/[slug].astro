@@ -1,0 +1,44 @@
+---
+/**
+ * AI & Tools project detail page. Plain article layout — these entries (vibe
+ * coding case studies, plugin builds, workflow automations) fit the standard
+ * title → cover → body structure with no special features, so no X-ray slot.
+ */
+import Base from "../../layouts/Base.astro";
+import ProjectArticle from "../../components/ProjectArticle.astro";
+import { getCollection, render } from "astro:content";
+
+export async function getStaticPaths() {
+  const projects = (await getCollection("projects")).filter(
+    (p) => p.data.discipline === "ai"
+  );
+  return projects.map((project) => ({
+    params: { slug: project.id },
+    props: { project },
+  }));
+}
+
+const { project } = Astro.props;
+const { Content } = await render(project);
+const dateLabel: string = project.data.date.toLocaleDateString("en-GB", {
+  year: "numeric",
+  month: "long",
+});
+---
+
+<Base
+  title={`${project.data.title} — Sunday Emmanuel Ajibade`}
+  description={project.data.description}
+>
+  <ProjectArticle
+    title={project.data.title}
+    dateLabel={dateLabel}
+    tools={project.data.tools}
+    tags={project.data.tags}
+    cover={project.data.cover}
+    backHref="/ai/"
+    backLabel="All AI &amp; tools projects"
+  >
+    <Content />
+  </ProjectArticle>
+</Base>

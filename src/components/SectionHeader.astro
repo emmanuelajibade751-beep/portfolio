@@ -1,0 +1,54 @@
+---
+/**
+ * The header block atop each section index page (/design, /structural,
+ * /research, /ai): a mono eyebrow, a large title, and one descriptive
+ * paragraph. Reused so every section reads with the same rhythm as the
+ * old WorkCatalogue head.
+ */
+interface Props {
+  eyebrow: string; // mono uppercase kicker, e.g. "Design"
+  title: string; // large heading, e.g. "Computational + Architectural Design"
+  description?: string; // optional one-paragraph intro
+}
+
+const { eyebrow, title, description } = Astro.props;
+---
+
+<header class="section-head">
+  <p class="section-head__eyebrow">{eyebrow}</p>
+  <h1 class="section-head__title">{title}</h1>
+  {description && <p class="section-head__desc">{description}</p>}
+</header>
+
+<style>
+  .section-head {
+    max-width: 1100px;
+    margin: 6rem auto 3rem;
+    padding: 0 1.5rem;
+  }
+
+  .section-head__eyebrow {
+    margin: 0 0 0.75rem;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--color-accent-deep);
+  }
+
+  .section-head__title {
+    margin: 0 0 1.25rem;
+    font-size: clamp(1.9rem, 4.5vw, 2.8rem);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+  }
+
+  .section-head__desc {
+    margin: 0;
+    max-width: 60ch;
+    font-size: 1rem;
+    line-height: 1.6;
+    color: var(--color-ink-soft);
+  }
+</style>

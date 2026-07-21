@@ -1,0 +1,154 @@
+---
+/**
+ * Shared detail-page chrome for design / structural / ai projects: the
+ * back-link, header (title, date, tools, tags), cover image, and a slot for
+ * the rendered markdown body. Extracted so the three discipline detail pages
+ * don't each re-maintain identical article markup and styling.
+ *
+ * The `xray` named slot sits between the back-link and the header — paired
+ * projects drop an <XRayToggle> in there; unpaired ones leave it empty.
+ */
+import { Image } from "astro:assets";
+import type { ImageMetadata } from "astro";
+import { withBase } from "../lib/base";
+
+interface Props {
+  title: string;
+  dateLabel: string;
+  tools: string[];
+  tags: string[];
+  cover: ImageMetadata;
+  backHref: string; // section index, e.g. "/design/"
+  backLabel: string; // e.g. "All design projects"
+}
+
+const { title, dateLabel, tools, tags, cover, backHref, backLabel } =
+  Astro.props;
+---
+
+<article class="project">
+  <a class="project__back" href={withBase(backHref)}>&larr; {backLabel}</a>
+
+  {/* Only renders a wrapper when the page actually passes an xray toggle. */}
+  {
+    Astro.slots.has("xray") && (
+      <div class="project__xray">
+        <slot name="xray" />
+      </div>
+    )
+  }
+
+  <header class="project__head">
+    <h1 class="project__title">{title}</h1>
+    <p class="project__meta">
+      <span>{dateLabel}</span>
+      {tools.length > 0 && <span> · {tools.join(" / ")}</span>}
+    </p>
+    {
+      tags.length > 0 && (
+        <p class="project__tags">
+          {tags.map((tag) => (
+            <span class="project__tag">{tag}</span>
+          ))}
+        </p>
+      )
+    }
+  </header>
+
+  <Image
+    class="project__cover"
+    src={cover}
+    alt={`Cover image for ${title}`}
+    width={1200}
+    height={800}
+  />
+
+  <div class="project__body">
+    <slot />
+  </div>
+</article>
+
+<style>
+  .project {
+    max-width: 760px;
+    margin: 4rem auto 6rem;
+    padding: 0 1.5rem;
+  }
+
+  .project__back {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-accent-deep);
+    text-decoration: none;
+  }
+
+  .project__back:hover {
+    text-decoration: underline;
+  }
+
+  .project__xray {
+    margin: 1.75rem 0 0;
+  }
+
+  .project__head {
+    margin: 2rem 0;
+  }
+
+  .project__title {
+    margin: 0 0 0.6rem;
+    font-size: clamp(1.9rem, 5vw, 2.8rem);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+  }
+
+  .project__meta {
+    margin: 0 0 0.8rem;
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    color: var(--color-ink-soft);
+  }
+
+  .project__tags {
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+
+  .project__tag {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 0.2rem 0.55rem;
+    border: 1px solid var(--color-grid-line);
+    color: var(--color-ink-soft);
+  }
+
+  .project__cover {
+    display: block;
+    width: 100%;
+    height: auto;
+    border: 1px solid var(--color-grid-line);
+    margin: 0 0 2.5rem;
+  }
+
+  .project__body {
+    font-size: 1.02rem;
+    line-height: 1.7;
+  }
+
+  .project__body :global(img) {
+    max-width: 100%;
+    height: auto;
+    border: 1px solid var(--color-grid-line);
+  }
+
+  .project__body :global(h2) {
+    margin-top: 2.2rem;
+    font-size: 1.35rem;
+    letter-spacing: -0.01em;
+  }
+</style>

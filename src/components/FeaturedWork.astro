@@ -1,0 +1,75 @@
+---
+/**
+ * A curated row of work on the landing page — the 3-4 projects flagged
+ * `featured: true`, hand-picked across disciplines rather than the full
+ * catalogue. Uses the shared ProjectCard, but because featured projects
+ * can come from any discipline, each card links to its own section route
+ * (`/design/…`, `/structural/…`, `/ai/…`) derived from the entry.
+ */
+import { getCollection } from "astro:content";
+import ProjectCard from "./ProjectCard.astro";
+import { withBase } from "../lib/base";
+
+const featured = (await getCollection("projects"))
+  .filter((project) => project.data.featured)
+  .sort(
+    (a, b) =>
+      (a.data.order ?? 99) - (b.data.order ?? 99) ||
+      b.data.date.valueOf() - a.data.date.valueOf()
+  );
+---
+
+{
+  featured.length > 0 && (
+    <section class="featured" aria-label="Featured work">
+      <div class="featured__head">
+        <p class="featured__eyebrow">Selected Work</p>
+        <h2 class="featured__title">Featured</h2>
+      </div>
+      <ul class="featured__grid">
+        {featured.map((project) => (
+          <ProjectCard
+            href={withBase(`/${project.data.discipline}/${project.id}/`)}
+            cover={project.data.cover}
+            title={project.data.title}
+            description={project.data.description}
+            tags={project.data.tags}
+          />
+        ))}
+      </ul>
+    </section>
+  )
+}
+
+<style>
+  .featured {
+    max-width: 1100px;
+    margin: 6rem auto;
+    padding: 0 1.5rem;
+  }
+
+  .featured__eyebrow {
+    margin: 0 0 0.75rem;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--color-accent-deep);
+  }
+
+  .featured__title {
+    margin: 0 0 2.5rem;
+    font-size: clamp(1.8rem, 4vw, 2.6rem);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+  }
+
+  .featured__grid {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 2rem;
+  }
+</style>

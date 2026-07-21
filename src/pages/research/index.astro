@@ -1,0 +1,24 @@
+---
+/**
+ * Research section index. A publications list, not a card grid — research has
+ * no cover imagery, so it reads as a citation list on an academic CV.
+ */
+import Base from "../../layouts/Base.astro";
+import SectionHeader from "../../components/SectionHeader.astro";
+import PublicationList from "../../components/PublicationList.astro";
+---
+
+<Base
+  title="Research — Sunday Emmanuel Ajibade"
+  description="Publications and studies: urban morphology, thermal comfort and the research underpinning the design practice."
+>
+  <SectionHeader
+    eyebrow="Research"
+    title="Publications & Studies"
+    description="Urban studies and building-performance research — the evidence
+      base that grounds the design work in how cities and buildings actually
+      behave."
+  />
+
+  <PublicationList />
+</Base>

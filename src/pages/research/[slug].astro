@@ -1,0 +1,191 @@
+---
+/**
+ * Research publication detail page. Distinct from project detail pages: no
+ * cover image, a full author byline, a prominent PDF link, then the optional
+ * extended write-up (methodology, figures) rendered from the markdown body.
+ */
+import Base from "../../layouts/Base.astro";
+import { getCollection, render } from "astro:content";
+import { withBase, withBaseIfLocal } from "../../lib/base";
+
+export async function getStaticPaths() {
+  const publications = await getCollection("research");
+  return publications.map((pub) => ({
+    params: { slug: pub.id },
+    props: { pub },
+  }));
+}
+
+const { pub } = Astro.props;
+const { Content } = await render(pub);
+const dateLabel: string = pub.data.date.toLocaleDateString("en-GB", {
+  year: "numeric",
+  month: "long",
+});
+---
+
+<Base title={`${pub.data.title} — Sunday Emmanuel Ajibade`} description={pub.data.abstract}>
+  <article class="paper">
+    <a class="paper__back" href={withBase("/research/")}>&larr; All research</a>
+
+    <header class="paper__head">
+      <h1 class="paper__title">{pub.data.title}</h1>
+      <p class="paper__byline">{pub.data.authors.join(", ")}</p>
+      <p class="paper__meta">{pub.data.venue} · {dateLabel}</p>
+      {
+        pub.data.pdfUrl && (
+          <a
+            class="paper__pdf"
+            href={withBaseIfLocal(pub.data.pdfUrl)}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Read the PDF ↗
+          </a>
+        )
+      }
+    </header>
+
+    <section class="paper__abstract">
+      <h2 class="paper__abstract-label">Abstract</h2>
+      <p>{pub.data.abstract}</p>
+    </section>
+
+    <div class="paper__body">
+      <Content />
+    </div>
+
+    {
+      pub.data.tags.length > 0 && (
+        <p class="paper__tags">
+          {pub.data.tags.map((tag) => (
+            <span class="paper__tag">{tag}</span>
+          ))}
+        </p>
+      )
+    }
+  </article>
+</Base>
+
+<style>
+  .paper {
+    max-width: 760px;
+    margin: 4rem auto 6rem;
+    padding: 0 1.5rem;
+  }
+
+  .paper__back {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-accent-deep);
+    text-decoration: none;
+  }
+
+  .paper__back:hover {
+    text-decoration: underline;
+  }
+
+  .paper__head {
+    margin: 2rem 0 2.5rem;
+  }
+
+  .paper__title {
+    margin: 0 0 0.8rem;
+    font-size: clamp(1.8rem, 4.5vw, 2.6rem);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+  }
+
+  .paper__byline {
+    margin: 0 0 0.35rem;
+    font-size: 1rem;
+    color: var(--color-fg);
+  }
+
+  .paper__meta {
+    margin: 0 0 1.25rem;
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    color: var(--color-ink-soft);
+  }
+
+  .paper__pdf {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: var(--color-accent-deep);
+    border: 1px solid var(--color-grid-line);
+    padding: 0.5rem 1rem;
+    transition:
+      border-color 0.25s ease,
+      color 0.25s ease;
+  }
+
+  .paper__pdf:hover,
+  .paper__pdf:focus-visible {
+    border-color: var(--color-accent);
+    color: var(--color-accent);
+  }
+
+  .paper__abstract {
+    margin: 0 0 2rem;
+    padding: 1.5rem 0;
+    border-top: 1px solid var(--color-grid-line);
+    border-bottom: 1px solid var(--color-grid-line);
+  }
+
+  .paper__abstract-label {
+    margin: 0 0 0.6rem;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--color-ink-soft);
+  }
+
+  .paper__abstract p {
+    margin: 0;
+    font-size: 1.02rem;
+    line-height: 1.7;
+  }
+
+  .paper__body {
+    font-size: 1.02rem;
+    line-height: 1.7;
+  }
+
+  .paper__body :global(img) {
+    max-width: 100%;
+    height: auto;
+    border: 1px solid var(--color-grid-line);
+  }
+
+  .paper__body :global(h2) {
+    margin-top: 2.2rem;
+    font-size: 1.35rem;
+    letter-spacing: -0.01em;
+  }
+
+  .paper__tags {
+    margin: 2.5rem 0 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+
+  .paper__tag {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 0.2rem 0.55rem;
+    border: 1px solid var(--color-grid-line);
+    color: var(--color-ink-soft);
+  }
+</style>

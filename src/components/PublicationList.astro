@@ -1,0 +1,144 @@
+---
+/**
+ * The research section's body: a citation-style list, not a card grid.
+ * Research entries have no cover image, so forcing them into the project
+ * card layout would look half-empty. Each row is title → byline → abstract
+ * → optional PDF link, reading like a publications page on an academic CV.
+ */
+import { getCollection } from "astro:content";
+import { withBase, withBaseIfLocal } from "../lib/base";
+
+// Newest first, with an explicit `order` override when the owner wants a
+// specific publication pinned to the top.
+const publications = (await getCollection("research")).sort(
+  (a, b) =>
+    (a.data.order ?? 99) - (b.data.order ?? 99) ||
+    b.data.date.valueOf() - a.data.date.valueOf()
+);
+
+// Format the publication date as a plain year-month; research is cited by
+// period, not exact day.
+const formatDate = (date: Date): string =>
+  date.toLocaleDateString("en-GB", { year: "numeric", month: "long" });
+---
+
+{
+  publications.length > 0 ? (
+    <ul class="pubs">
+      {publications.map((pub) => (
+        <li class="pub">
+          <a class="pub__title" href={withBase(`/research/${pub.id}/`)}>
+            {pub.data.title}
+          </a>
+          <p class="pub__byline">
+            {pub.data.authors.join(", ")}
+            <span class="pub__sep" aria-hidden="true">
+              ·
+            </span>
+            {pub.data.venue}
+            <span class="pub__sep" aria-hidden="true">
+              ·
+            </span>
+            {formatDate(pub.data.date)}
+          </p>
+          <p class="pub__abstract">{pub.data.abstract}</p>
+          {pub.data.pdfUrl && (
+            <a
+              class="pub__pdf"
+              href={withBaseIfLocal(pub.data.pdfUrl)}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              PDF ↗
+            </a>
+          )}
+        </li>
+      ))}
+    </ul>
+  ) : (
+    <p class="pubs__empty">No publications listed yet.</p>
+  )
+}
+
+<style>
+  .pubs {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 2.75rem;
+  }
+
+  .pub {
+    border-top: 1px solid var(--color-grid-line);
+    padding-top: 1.75rem;
+  }
+
+  .pub__title {
+    display: inline-block;
+    margin: 0 0 0.5rem;
+    font-size: 1.3rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    color: inherit;
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.25s ease;
+  }
+
+  .pub__title:hover,
+  .pub__title:focus-visible {
+    border-bottom-color: var(--color-accent);
+  }
+
+  .pub__byline {
+    margin: 0 0 0.75rem;
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    letter-spacing: 0.04em;
+    color: var(--color-ink-soft);
+  }
+
+  .pub__sep {
+    margin: 0 0.5em;
+  }
+
+  .pub__abstract {
+    margin: 0 0 1rem;
+    font-size: 0.95rem;
+    line-height: 1.65;
+    color: var(--color-fg);
+  }
+
+  .pub__pdf {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: var(--color-accent-deep);
+    border: 1px solid var(--color-grid-line);
+    padding: 0.4rem 0.9rem;
+    transition:
+      border-color 0.25s ease,
+      color 0.25s ease;
+  }
+
+  .pub__pdf:hover,
+  .pub__pdf:focus-visible {
+    border-color: var(--color-accent);
+    color: var(--color-accent);
+  }
+
+  .pubs__empty {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    color: var(--color-ink-soft);
+  }
+</style>

@@ -1,12 +1,36 @@
 ---
 /**
- * Quiet typographic nav: mono wordmark + three links. Black on white,
- * orange reserved for hover/active.
+ * Quiet typographic nav: mono wordmark + section links. Black on white,
+ * orange reserved for hover/active. Seven links crowd a phone, so below
+ * 640px they collapse behind a hamburger toggle (progressive enhancement —
+ * the links are plain <a>s that work with JS off; the toggle only hides
+ * them when the small-screen CSS applies).
+ *
+ * Section links are absolute routes; About/Contact are anchors on the
+ * landing page, so they carry the leading "/" to work from any page.
+ * Every href is run through withBase() so links keep working when the
+ * site is hosted under a sub-path (e.g. GitHub Pages' /portfolio/).
  */
+import { withBase } from "../lib/base";
+
+interface NavLink {
+  label: string;
+  href: string;
+}
+
+const links: NavLink[] = [
+  { label: "Design", href: "/design/" },
+  { label: "Structure", href: "/structural/" },
+  { label: "Research", href: "/research/" },
+  { label: "AI", href: "/ai/" },
+  { label: "CV", href: "/cv/" },
+  { label: "About", href: "/#about" },
+  { label: "Contact", href: "/#contact" },
+];
 ---
 
-<header class="nav">
-  <a class="nav__mark" href="/">
+<header class="nav" data-nav>
+  <a class="nav__mark" href={withBase("/")}>
     <svg viewBox="0 0 100 100" width="18" height="18" aria-hidden="true">
       <path
         d="M50 5 L60 40 L95 50 L60 60 L50 95 L40 60 L5 50 L40 40 Z"
@@ -16,12 +40,56 @@
     <!-- Owner-editable: name + practice line -->
     <span>Sunday Emmanuel Ajibade</span>
   </a>
-  <nav class="nav__links" aria-label="Site">
-    <a href="/#work">Work</a>
-    <a href="/#about">About</a>
-    <a href="/#contact">Contact</a>
+
+  <button
+    class="nav__toggle"
+    type="button"
+    aria-expanded="false"
+    aria-controls="nav-links"
+    aria-label="Menu"
+    data-nav-toggle
+  >
+    <span class="nav__toggle-bar"></span>
+    <span class="nav__toggle-bar"></span>
+    <span class="nav__toggle-bar"></span>
+  </button>
+
+  <nav class="nav__links" id="nav-links" aria-label="Site">
+    {links.map((link) => <a href={withBase(link.href)}>{link.label}</a>)}
   </nav>
 </header>
+
+<script>
+  // Mobile menu toggle. Kept deliberately tiny: flip a class on the header
+  // and the button's aria-expanded, and close on link click or Escape so the
+  // menu never traps a keyboard user. No animation loop — nothing to gate for
+  // reduced motion here.
+  const header = document.querySelector<HTMLElement>("[data-nav]");
+  const toggle = document.querySelector<HTMLButtonElement>("[data-nav-toggle]");
+
+  if (header && toggle) {
+    const nav: HTMLElement = header;
+    const button: HTMLButtonElement = toggle;
+
+    const setOpen = (open: boolean): void => {
+      nav.classList.toggle("nav--open", open);
+      button.setAttribute("aria-expanded", String(open));
+    };
+
+    button.addEventListener("click", () => {
+      setOpen(!nav.classList.contains("nav--open"));
+    });
+
+    // Tapping a link navigates (or scrolls to an anchor) — collapse after.
+    nav.querySelectorAll(".nav__links a").forEach((link) => {
+      link.addEventListener("click", () => setOpen(false));
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") setOpen(false);
+    });
+  }
+</script>
 
 <style>
   .nav {
@@ -32,6 +100,7 @@
     max-width: 1100px;
     margin: 0 auto;
     padding: 1.4rem 1.5rem;
+    flex-wrap: wrap;
   }
 
   .nav__mark {
@@ -53,6 +122,7 @@
   .nav__links {
     display: flex;
     gap: 1.6rem;
+    flex-wrap: wrap;
   }
 
   .nav__links a {
@@ -68,5 +138,46 @@
   .nav__links a:hover,
   .nav__links a:focus-visible {
     color: var(--color-accent-deep);
+  }
+
+  /* Hamburger button — hidden on desktop, shown on small screens. */
+  .nav__toggle {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    gap: 4px;
+    width: 40px;
+    height: 34px;
+    padding: 0;
+    background: none;
+    border: 1px solid var(--color-grid-line);
+    cursor: pointer;
+  }
+
+  .nav__toggle-bar {
+    display: block;
+    width: 18px;
+    height: 2px;
+    margin: 0 auto;
+    background: var(--color-fg);
+  }
+
+  @media (max-width: 640px) {
+    .nav__toggle {
+      display: inline-flex;
+    }
+
+    /* Links collapse to a full-width column, hidden until the menu opens. */
+    .nav__links {
+      display: none;
+      flex-basis: 100%;
+      flex-direction: column;
+      gap: 0.9rem;
+      padding-top: 1rem;
+    }
+
+    .nav--open .nav__links {
+      display: flex;
+    }
   }
 </style>

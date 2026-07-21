@@ -1,0 +1,68 @@
+---
+/**
+ * Structural project detail page. Mirror of the design detail page: same
+ * article chrome, but the X-ray toggle is driven by `designPair` and links
+ * back to the design lens of the same building.
+ */
+import Base from "../../layouts/Base.astro";
+import ProjectArticle from "../../components/ProjectArticle.astro";
+import XRayToggle from "../../components/XRayToggle.astro";
+import { getCollection, render } from "astro:content";
+
+export async function getStaticPaths() {
+  const all = await getCollection("projects");
+  const ids = new Set(all.map((p) => p.id));
+  const structural = all.filter((p) => p.data.discipline === "structural");
+
+  // Same build-time guard as the design side: a dangling designPair is a typo.
+  for (const project of structural) {
+    const pair = project.data.designPair;
+    if (pair && !ids.has(pair)) {
+      throw new Error(
+        `Structural project "${project.id}" has designPair "${pair}", ` +
+          `but no project with that slug exists.`
+      );
+    }
+  }
+
+  return structural.map((project) => ({
+    params: { slug: project.id },
+    props: { project },
+  }));
+}
+
+const { project } = Astro.props;
+const { Content } = await render(project);
+const dateLabel: string = project.data.date.toLocaleDateString("en-GB", {
+  year: "numeric",
+  month: "long",
+});
+const designPair: string | undefined = project.data.designPair;
+---
+
+<Base
+  title={`${project.data.title} — Sunday Emmanuel Ajibade`}
+  description={project.data.description}
+>
+  <ProjectArticle
+    title={project.data.title}
+    dateLabel={dateLabel}
+    tools={project.data.tools}
+    tags={project.data.tags}
+    cover={project.data.cover}
+    backHref="/structural/"
+    backLabel="All structural projects"
+  >
+    {
+      designPair && (
+        <XRayToggle
+          slot="xray"
+          currentLens="structural"
+          designSlug={designPair}
+          structuralSlug={project.id}
+        />
+      )
+    }
+    <Content />
+  </ProjectArticle>
+</Base>

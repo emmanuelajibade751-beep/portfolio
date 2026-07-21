@@ -6,6 +6,8 @@ tags: ["facade", "panelization"]
 tools: ["Rhino", "Grasshopper"]
 cover: "./facade-study-cover.svg"
 order: 1
+discipline: "design"
+featured: true
 ---
 
 **Placeholder — replace this write-up with your own.**

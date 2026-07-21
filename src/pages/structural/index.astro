@@ -1,0 +1,29 @@
+---
+/**
+ * Structural detailing section index. Header + discipline-filtered grid.
+ * No canvas scenes here — this section is about buildability, not generative
+ * geometry; the work speaks through drawings and details in the entries.
+ */
+import Base from "../../layouts/Base.astro";
+import SectionHeader from "../../components/SectionHeader.astro";
+import SectionGrid from "../../components/SectionGrid.astro";
+---
+
+<Base
+  title="Structural Detailing — Sunday Emmanuel Ajibade"
+  description="Connection details, technical drawings and structural systems — the buildability layer beneath the design work."
+>
+  <SectionHeader
+    eyebrow="Structure"
+    title="Structural Detailing"
+    description="Connections, section details and load paths — the buildability
+      layer that turns a design intent into something that stands up and gets
+      fabricated."
+  />
+
+  <SectionGrid
+    discipline="structural"
+    basePath="/structural"
+    emptyMessage="Structural projects are on the way — check back soon."
+  />
+</Base>

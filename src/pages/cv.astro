@@ -1,0 +1,100 @@
+---
+/**
+ * CV / resume page — placeholder for now. Two ways to finish it: drop a
+ * PDF at public/cv.pdf and link it here, or fill the structured sections
+ * below. Kept intentionally minimal so it can ship empty and grow later.
+ */
+import Base from "../layouts/Base.astro";
+import SectionHeader from "../components/SectionHeader.astro";
+import { withBase } from "../lib/base";
+---
+
+<Base
+  title="CV — Sunday Emmanuel Ajibade"
+  description="Curriculum vitae: education, experience, skills and publications of Sunday Emmanuel Ajibade."
+>
+  <SectionHeader
+    eyebrow="CV"
+    title="Curriculum Vitae"
+    description="A snapshot of education, experience and skills. Placeholder —
+      replace with your own details, or drop a PDF at public/cv.pdf and link it
+      from the button below."
+  />
+
+  <div class="cv">
+    <a class="cv__download" href={withBase("/cv.pdf")}>Download PDF ↓</a>
+
+    <section class="cv__block">
+      <h2 class="cv__label">Experience</h2>
+      <p class="cv__placeholder">
+        [Placeholder — add roles, studios, and dates.]
+      </p>
+    </section>
+
+    <section class="cv__block">
+      <h2 class="cv__label">Education</h2>
+      <p class="cv__placeholder">
+        [Placeholder — add degrees, institutions, and years.]
+      </p>
+    </section>
+
+    <section class="cv__block">
+      <h2 class="cv__label">Skills</h2>
+      <p class="cv__placeholder">
+        Architecture · Computational Design · Structural Detailing · Rhino /
+        Grasshopper · C# / RhinoCommon · Research · AI / Vibe Coding
+      </p>
+    </section>
+  </div>
+</Base>
+
+<style>
+  .cv {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+  }
+
+  .cv__download {
+    display: inline-block;
+    margin: 0 0 2.5rem;
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: var(--color-accent-deep);
+    border: 1px solid var(--color-grid-line);
+    padding: 0.5rem 1rem;
+    transition:
+      border-color 0.25s ease,
+      color 0.25s ease;
+  }
+
+  .cv__download:hover,
+  .cv__download:focus-visible {
+    border-color: var(--color-accent);
+    color: var(--color-accent);
+  }
+
+  .cv__block {
+    padding: 1.5rem 0;
+    border-top: 1px solid var(--color-grid-line);
+  }
+
+  .cv__label {
+    margin: 0 0 0.6rem;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--color-ink-soft);
+  }
+
+  .cv__placeholder {
+    margin: 0;
+    font-size: 1rem;
+    line-height: 1.7;
+    color: var(--color-fg);
+  }
+</style>

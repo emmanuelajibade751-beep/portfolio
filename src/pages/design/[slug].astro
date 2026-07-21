@@ -1,0 +1,69 @@
+---
+/**
+ * Design project detail page. Standard article chrome via ProjectArticle,
+ * plus the X-ray toggle when the project declares a `structuralPair` — the
+ * toggle is just a link to the paired structural page (both are pre-rendered).
+ */
+import Base from "../../layouts/Base.astro";
+import ProjectArticle from "../../components/ProjectArticle.astro";
+import XRayToggle from "../../components/XRayToggle.astro";
+import { getCollection, render } from "astro:content";
+
+export async function getStaticPaths() {
+  const all = await getCollection("projects");
+  const ids = new Set(all.map((p) => p.id));
+  const design = all.filter((p) => p.data.discipline === "design");
+
+  // Build-time guard: a structuralPair that doesn't resolve is a typo that
+  // would ship a dead toggle link. Fail the build instead of shipping it.
+  for (const project of design) {
+    const pair = project.data.structuralPair;
+    if (pair && !ids.has(pair)) {
+      throw new Error(
+        `Design project "${project.id}" has structuralPair "${pair}", ` +
+          `but no project with that slug exists.`
+      );
+    }
+  }
+
+  return design.map((project) => ({
+    params: { slug: project.id },
+    props: { project },
+  }));
+}
+
+const { project } = Astro.props;
+const { Content } = await render(project);
+const dateLabel: string = project.data.date.toLocaleDateString("en-GB", {
+  year: "numeric",
+  month: "long",
+});
+const structuralPair: string | undefined = project.data.structuralPair;
+---
+
+<Base
+  title={`${project.data.title} — Sunday Emmanuel Ajibade`}
+  description={project.data.description}
+>
+  <ProjectArticle
+    title={project.data.title}
+    dateLabel={dateLabel}
+    tools={project.data.tools}
+    tags={project.data.tags}
+    cover={project.data.cover}
+    backHref="/design/"
+    backLabel="All design projects"
+  >
+    {
+      structuralPair && (
+        <XRayToggle
+          slot="xray"
+          currentLens="design"
+          designSlug={project.id}
+          structuralSlug={structuralPair}
+        />
+      )
+    }
+    <Content />
+  </ProjectArticle>
+</Base>

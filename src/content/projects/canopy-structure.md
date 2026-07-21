@@ -6,6 +6,8 @@ tags: ["structure", "form-finding"]
 tools: ["Rhino", "Grasshopper", "Kangaroo"]
 cover: "./canopy-structure-cover.svg"
 order: 2
+discipline: "structural"
+featured: true
 ---
 
 **Placeholder — replace this write-up with your own.**

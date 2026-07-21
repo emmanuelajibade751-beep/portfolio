@@ -1,0 +1,28 @@
+---
+/**
+ * AI & Tools section index. Header + discipline-filtered grid. Home for vibe
+ * coding case studies, Grasshopper plugins and AI-assisted workflows.
+ */
+import Base from "../../layouts/Base.astro";
+import SectionHeader from "../../components/SectionHeader.astro";
+import SectionGrid from "../../components/SectionGrid.astro";
+---
+
+<Base
+  title="AI & Tools — Sunday Emmanuel Ajibade"
+  description="Applied intelligence: vibe coding, AI-assisted design workflows and custom Grasshopper plugins."
+>
+  <SectionHeader
+    eyebrow="AI & Tools"
+    title="Applied Intelligence"
+    description="Vibe coding, AI-assisted workflows and the custom tools —
+      Grasshopper plugins, scripts, automations — that speed the design work up
+      and take the tedium out of it."
+  />
+
+  <SectionGrid
+    discipline="ai"
+    basePath="/ai"
+    emptyMessage="AI & tools case studies are in progress — check back soon."
+  />
+</Base>

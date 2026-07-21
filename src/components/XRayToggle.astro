@@ -1,0 +1,80 @@
+---
+/**
+ * The "X-ray" lens switch shown on paired projects: two links that flip
+ * between the design and structural views of the same building. It is
+ * deliberately just styled navigation, not a JS widget — both views are
+ * separate pre-rendered pages, so an <a> is instant on static hosting,
+ * keeps each URL shareable, preserves the back button, and ships zero JS.
+ * The active lens carries the orange underline; the other is muted.
+ */
+import { withBase } from "../lib/base";
+
+interface Props {
+  currentLens: "design" | "structural";
+  designSlug: string;
+  structuralSlug: string;
+}
+
+const { currentLens, designSlug, structuralSlug } = Astro.props;
+---
+
+<nav class="xray" aria-label="Project lens">
+  <a
+    class:list={["xray__btn", { "xray__btn--active": currentLens === "design" }]}
+    href={withBase(`/design/${designSlug}/`)}
+    aria-current={currentLens === "design" ? "page" : undefined}
+  >
+    Design
+  </a>
+  <span class="xray__divider" aria-hidden="true">←→</span>
+  <a
+    class:list={[
+      "xray__btn",
+      { "xray__btn--active": currentLens === "structural" },
+    ]}
+    href={withBase(`/structural/${structuralSlug}/`)}
+    aria-current={currentLens === "structural" ? "page" : undefined}
+  >
+    Structure
+  </a>
+</nav>
+
+<style>
+  .xray {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    border: 1px solid var(--color-grid-line);
+    padding: 0.35rem 0.9rem;
+  }
+
+  .xray__btn {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: var(--color-ink-soft);
+    padding: 0.25rem 0.2rem;
+    border-bottom: 2px solid transparent;
+    transition:
+      color 0.25s ease,
+      border-color 0.25s ease;
+  }
+
+  .xray__btn:hover,
+  .xray__btn:focus-visible {
+    color: var(--color-fg);
+  }
+
+  .xray__btn--active {
+    color: var(--color-fg);
+    border-bottom-color: var(--color-accent);
+  }
+
+  .xray__divider {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--color-ink-soft);
+  }
+</style>

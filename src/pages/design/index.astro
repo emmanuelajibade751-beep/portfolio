@@ -1,0 +1,34 @@
+---
+/**
+ * Design section index. The three signature canvas scenes live here now —
+ * moved off the landing page because they speak pure computational language.
+ * As a "methodology" interlude between the work grid and the footer they read
+ * as *how* design problems are approached, not the first thing a visitor sees.
+ */
+import Base from "../../layouts/Base.astro";
+import SectionHeader from "../../components/SectionHeader.astro";
+import SectionGrid from "../../components/SectionGrid.astro";
+import SvgMorphMotif from "../../components/SvgMorphMotif.astro";
+import FlowField from "../../components/FlowField.astro";
+import ParametricPlayground from "../../components/ParametricPlayground.astro";
+---
+
+<Base
+  title="Design — Sunday Emmanuel Ajibade"
+  description="Computational and architectural design: parametric facades, form-found structures, generative massing and the systems thinking behind them."
+>
+  <SectionHeader
+    eyebrow="Design"
+    title="Computational + Architectural Design"
+    description="One practice, two lenses — architectural intent worked out through
+      parametric systems. Facades, massing and geometry explored as live,
+      manipulable fields rather than static renders."
+  />
+
+  <SectionGrid discipline="design" basePath="/design" />
+
+  {/* Methodology interlude — the computational scenes in their natural home. */}
+  <SvgMorphMotif />
+  <FlowField />
+  <ParametricPlayground />
+</Base>

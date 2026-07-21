@@ -60,16 +60,16 @@ const projects: Project[] = [
     size: "tall",
   },
   {
-    id: "urban-research",
+    id: "reading-lagos",
     index: "04",
-    title: "Urban Interfaces",
+    title: "Reading Lagos: The Subtractive City",
     category: "Urban Research",
-    year: "2025—26",
-    location: "Research Archive",
+    year: "2026",
+    location: "LLL Laboratory · Lagos",
     summary:
-      "Field observation, mapping and writing focused on how movement, informal exchange and public space shape fast-changing cities.",
-    impact: "Fieldwork + mapping + publication",
-    tools: ["QGIS", "Space syntax", "Mapping", "Research writing"],
+      "A satellite-led reading of Lagos as a city of conversion: public guarantees withdrawn, private substitutes assembled in their place.",
+    impact: "Co-author · Published research",
+    tools: ["Satellite data", "Urban mapping", "Research writing", "Visual narrative"],
     visual: "fabric",
     size: "standard",
   },
@@ -372,6 +372,7 @@ export default function Home() {
         <div className="header-status"><i /> Architect · Computational Designer</div>
         <nav aria-label="Primary navigation">
           <a href="#work">Work</a>
+          <a href="#research">Research</a>
           <a href="#expertise">Expertise</a>
           <a href="#lab">Lab</a>
           <a href="#profile">About</a>
@@ -462,9 +463,93 @@ export default function Home() {
         </div>
       </section>
 
+      <section className="research-feature" id="research">
+        <div className="research-mast reveal">
+          <div className="section-code">[ 02 / FEATURED RESEARCH ]</div>
+          <div className="research-title">
+            <span>Reading Lagos</span>
+            <h2>The Subtractive<br /><em>City.</em></h2>
+          </div>
+          <div className="research-stamp">
+            <span>LLL LABORATORY</span>
+            <span>LAGOS · 2026</span>
+            <b>CO-AUTHOR</b>
+          </div>
+        </div>
+
+        <figure className="research-hero reveal">
+          <img
+            src="/research/subtractive-city/truckload-urbanism.jpg"
+            alt="Satellite mapping study comparing distributed land reclamation across Lagos with Eko Atlantic"
+          />
+          <figcaption><span>01 / TERRITORY</span> Truckload Urbanism — reading reclamation as a city-scale material system.</figcaption>
+        </figure>
+
+        <div className="research-thesis reveal">
+          <p>“A city is judged by what it has. This one is understood by what has been taken away.”</p>
+          <div>
+            <span>RESEARCH THESIS</span>
+            <p>
+              The study reads Lagos backwards: not as a catalogue of absences, but as a network of conversions. When public guarantees recede, citizens assemble parallel systems for land, movement, value and culture.
+            </p>
+          </div>
+        </div>
+
+        <div className="research-data reveal">
+          <div>
+            <span className="section-code">THE CITY / 12 LAYERS</span>
+            <h3>Evidence before speculation.</h3>
+          </div>
+          <ol>
+            {["Surface water", "Elevation", "Flood exposure", "Population density", "Built volume · FSI", "Ground coverage · GSI", "Building height", "Street density", "Night lights", "Relative wealth", "Urban growth", "The informal city"].map((layer, index) => (
+              <li key={layer}><span>{String(index + 1).padStart(2, "0")}</span>{layer}</li>
+            ))}
+          </ol>
+        </div>
+
+        <div className="research-pair reveal">
+          <figure>
+            <img src="/research/subtractive-city/archipelago-before.jpg" alt="Existing Lagos lagoon and bridge condition" />
+            <figcaption><span>BEFORE</span> The lagoon as dividing line</figcaption>
+          </figure>
+          <figure>
+            <img src="/research/subtractive-city/archipelago-after.jpg" alt="Speculative proposal for an inhabited Lagos archipelago" />
+            <figcaption><span>AMPLIFIED</span> The Archipelago</figcaption>
+          </figure>
+        </div>
+
+        <div className="research-gallery reveal">
+          <div className="research-gallery-intro">
+            <span className="section-code">THE NEW LAGOS / AMPLIFICATIONS</span>
+            <h3>Not solutions dropped from above. Existing intelligence, made spatial.</h3>
+            <p>Five scenes translate the research into civic propositions across water, learning, exchange and culture.</p>
+          </div>
+          {[
+            ["green-makoko.jpg", "Green Makoko", "Productive landscapes on water"],
+            ["school-over-makoko.jpg", "School over Makoko", "Learning as shared infrastructure"],
+            ["pattern-junction.jpg", "Pattern Junction", "Street commerce as civic plan"],
+            ["transmitter.jpg", "The Transmitter", "Nollywood as urban institution"],
+          ].map(([image, title, caption], index) => (
+            <figure className={`research-gallery-item item-${index + 1}`} key={title}>
+              <img src={`/research/subtractive-city/${image}`} alt={`${title} speculative urban proposal`} />
+              <figcaption><span>{String(index + 1).padStart(2, "0")}</span><b>{title}</b><small>{caption}</small></figcaption>
+            </figure>
+          ))}
+        </div>
+
+        <div className="research-colophon reveal">
+          <div><span>ROLE</span><strong>Co-author · Research · Mapping</strong></div>
+          <div><span>PUBLICATION</span><strong>LLL Laboratory / Lex te Loo Architects</strong></div>
+          <div><span>TEAM</span><strong>Seven-person international research studio</strong></div>
+          <a href="https://lexteloo.com/think-tank/research/the-subtractive-city" target="_blank" rel="noreferrer">
+            Read the full research <span>↗</span>
+          </a>
+        </div>
+      </section>
+
       <section className="lab-section" id="lab">
         <div className="section-heading invert reveal">
-          <div className="section-code">[ 02 / SYSTEMS LAB ]</div>
+          <div className="section-code">[ 03 / SYSTEMS LAB ]</div>
           <h2>Don’t show the outcome.<br /><em>Show the intelligence.</em></h2>
           <p>A live form-finding study. Adjust the structure and watch design intent become measurable.</p>
         </div>
@@ -472,7 +557,7 @@ export default function Home() {
       </section>
 
       <section className="capabilities reveal" id="expertise">
-        <div className="section-code">[ 03 / CAPABILITY STACK ]</div>
+        <div className="section-code">[ 04 / CAPABILITY STACK ]</div>
         <h2>One practice.<br />Multiple resolutions.</h2>
         <div className="capability-list">
           {[
@@ -490,7 +575,7 @@ export default function Home() {
 
       <section className="process-section">
         <div className="process-top reveal">
-          <div className="section-code">[ 04 / OPERATING SYSTEM ]</div>
+          <div className="section-code">[ 05 / OPERATING SYSTEM ]</div>
           <p>Every project moves between the physical, the analytical and the imaginable.</p>
         </div>
         <div className="process-line reveal">
@@ -513,7 +598,7 @@ export default function Home() {
             <div className="portrait-mark">SEA</div>
           </div>
           <div className="profile-copy">
-            <div className="section-code">[ 05 / PROFILE ]</div>
+            <div className="section-code">[ 06 / PROFILE ]</div>
             <h2>Generalist by range.<br />Specialist by depth.</h2>
             <p className="profile-lead">
               I’m an architect and computational designer connecting architectural intent with structural buildability.

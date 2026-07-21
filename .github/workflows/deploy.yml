@@ -23,6 +23,10 @@ jobs:
       - uses: actions/checkout@v4
       - name: Build with Astro
         uses: withastro/action@v3
+        with:
+          # package.json's engines field requires >=22.12.0; the action
+          # defaults to Node 20, which astro build refuses to run under.
+          node-version: 22
         # Handles npm install + astro build + astro check, and uploads
         # dist/ as a Pages artifact — the `site`/`base` in astro.config.mjs
         # already point at this repo's GitHub Pages URL.

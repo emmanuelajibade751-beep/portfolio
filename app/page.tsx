@@ -133,6 +133,11 @@ function HeroField() {
     if (!canvas) return;
     const context = canvas.getContext("2d");
     if (!context) return;
+    const rootStyle = getComputedStyle(document.documentElement);
+    const lineColor = rootStyle.getPropertyValue("--canvas-line").trim() || "rgba(239,238,233,.28)";
+    const signalColor = rootStyle.getPropertyValue("--signal").trim() || "#f2b13a";
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
 
     let frame = 0;
     let animation = 0;
@@ -171,7 +176,7 @@ function HeroField() {
       }
 
       context.lineWidth = 0.75;
-      context.strokeStyle = "rgba(17,17,17,.34)";
+      context.strokeStyle = lineColor;
       for (const line of points) {
         context.beginPath();
         line.forEach((point, i) =>
@@ -187,7 +192,7 @@ function HeroField() {
         context.stroke();
       }
 
-      context.fillStyle = "#ff4d24";
+      context.fillStyle = signalColor;
       points.forEach((line, row) =>
         line.forEach((point, col) => {
           if ((row + col) % 11 === 0) {
@@ -199,7 +204,7 @@ function HeroField() {
       );
 
       frame += 1;
-      animation = requestAnimationFrame(draw);
+      if (!prefersReducedMotion) animation = requestAnimationFrame(draw);
     };
 
     const handlePointer = (event: PointerEvent) => {
@@ -209,11 +214,19 @@ function HeroField() {
         y: Math.max(0, Math.min(1, (event.clientY - rect.top) / rect.height)),
       };
     };
-    canvas.addEventListener("pointermove", handlePointer);
+    if (prefersReducedMotion) {
+      window.addEventListener("resize", draw);
+    } else {
+      canvas.addEventListener("pointermove", handlePointer);
+    }
     draw();
     return () => {
       cancelAnimationFrame(animation);
-      canvas.removeEventListener("pointermove", handlePointer);
+      if (prefersReducedMotion) {
+        window.removeEventListener("resize", draw);
+      } else {
+        canvas.removeEventListener("pointermove", handlePointer);
+      }
     };
   }, []);
 
@@ -247,6 +260,10 @@ function ParametricLab() {
     if (!canvas) return;
     const context = canvas.getContext("2d");
     if (!context) return;
+    const rootStyle = getComputedStyle(document.documentElement);
+    const lineColor = rootStyle.getPropertyValue("--canvas-line").trim() || "rgba(239,238,233,.28)";
+    const signalColor = rootStyle.getPropertyValue("--signal").trim() || "#f2b13a";
+
 
     const draw = () => {
       const rect = canvas.getBoundingClientRect();
@@ -274,7 +291,7 @@ function ParametricLab() {
         pts.push(current);
       }
 
-      context.strokeStyle = "rgba(244,241,231,.52)";
+      context.strokeStyle = lineColor;
       context.lineWidth = 0.75;
       pts.forEach((line, row) => {
         if (row % Math.max(1, Math.round(porosity / 12)) === 0) return;
@@ -291,7 +308,7 @@ function ParametricLab() {
         );
         context.stroke();
       }
-      context.fillStyle = "#ff4d24";
+      context.fillStyle = signalColor;
       pts.forEach((line, row) =>
         line.forEach((point, col) => {
           if ((row * cols + col) % 37 === 0) {
@@ -420,7 +437,7 @@ export default function Home() {
               key={title}
               onClick={() => {
                 setCategory(target);
-                document.getElementById("work")?.scrollIntoView({ behavior: "smooth" });
+                document.getElementById("work")?.scrollIntoView({ behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
               }}
             >
               <span>{index}</span><strong>{title}</strong><small>{text}</small><i>↘︎</i>
@@ -644,7 +661,7 @@ export default function Home() {
       {activeProject && (
         <div className="project-overlay" role="dialog" aria-modal="true" aria-labelledby="project-title" onMouseDown={(event) => event.target === event.currentTarget && setActiveProject(null)}>
           <aside className="project-drawer">
-            <button className="drawer-close" onClick={() => setActiveProject(null)} aria-label="Close case study">Close ×</button>
+            <button className="drawer-close" onClick={() => setActiveProject(null)} aria-label="Close case study" autoFocus>Close ×</button>
             <div className="drawer-index">CASE STUDY / {activeProject.index}</div>
             <ProjectVisual type={activeProject.visual} />
             <div className="drawer-content">

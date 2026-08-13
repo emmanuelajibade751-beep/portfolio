@@ -45,7 +45,7 @@ test("server-renders the portfolio identity and metadata", async () => {
   );
   assert.match(
     html,
-    /<meta property="og:image" content="https:\/\/emmanuelajibade751-beep\.github\.io\/portfolio\/og-v2\.png"\/>/i,
+    /<meta property="og:image" content="https:\/\/emmanuelajibade751-beep\.github\.io\/portfolio\/og-studio-night\.png"\/>/i,
   );
   assert.match(html, /<meta name="twitter:card" content="summary_large_image"\/>/i);
   assert.match(html, /aria-label="Design across systems"/i);
@@ -119,7 +119,7 @@ test("renders the research feature with valid local assets", async () => {
     assert.ok(alt?.trim(), `research image needs alt text: ${tag}`);
   }
 
-  for (const assetPath of [...expectedResearchImages, "/og-v2.png"]) {
+  for (const assetPath of [...expectedResearchImages, "/og-studio-night.png"]) {
     const info = await stat(new URL(`../public${assetPath}`, import.meta.url));
     assert.ok(info.isFile(), `${assetPath} should be a file`);
     assert.ok(info.size > 0, `${assetPath} should not be empty`);

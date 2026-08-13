@@ -60,7 +60,7 @@ function outputPathForUrl(value, documentPath) {
 await Promise.all([
   requireFile("index.html"),
   requireFile("404.html"),
-  requireFile("og-v2.png"),
+  requireFile("og-studio-night.png"),
   requireFile("research/subtractive-city/truckload-urbanism.jpg"),
 ]);
 

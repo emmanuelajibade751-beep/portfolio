@@ -19,6 +19,7 @@ type Project = {
   impact: string;
   tools: string[];
   visual: string;
+  image?: string;
   size: "wide" | "tall" | "standard";
 };
 
@@ -77,6 +78,7 @@ const projects: Project[] = [
     impact: "Co-author · Published research",
     tools: ["Satellite data", "Urban mapping", "Research writing", "Visual narrative"],
     visual: "fabric",
+    image: "/research/subtractive-city/archipelago-after.jpg",
     size: "standard",
   },
   {
@@ -125,117 +127,13 @@ const practiceAreas = [
   ["04", "AI & Tools", "Vibe coding, plugins, workflows", "AI Research"],
 ];
 
-function HeroField() {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+function ProjectVisual({ type, image }: { type: string; image?: string }) {
+  const style = image
+    ? ({ "--project-image": `url("${publicAsset(image)}")` } as React.CSSProperties)
+    : undefined;
 
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const context = canvas.getContext("2d");
-    if (!context) return;
-    const rootStyle = getComputedStyle(document.documentElement);
-    const lineColor = rootStyle.getPropertyValue("--canvas-line").trim() || "rgba(239,238,233,.28)";
-    const signalColor = rootStyle.getPropertyValue("--signal").trim() || "#f2b13a";
-    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-
-    let frame = 0;
-    let animation = 0;
-    let pointer = { x: 0.72, y: 0.42 };
-
-    const draw = () => {
-      const rect = canvas.getBoundingClientRect();
-      const ratio = Math.min(window.devicePixelRatio || 1, 2);
-      if (canvas.width !== rect.width * ratio || canvas.height !== rect.height * ratio) {
-        canvas.width = rect.width * ratio;
-        canvas.height = rect.height * ratio;
-      }
-      context.setTransform(ratio, 0, 0, ratio, 0, 0);
-      context.clearRect(0, 0, rect.width, rect.height);
-
-      const cols = 23;
-      const rows = 15;
-      const points: { x: number; y: number }[][] = [];
-      for (let row = 0; row < rows; row += 1) {
-        const line = [];
-        for (let col = 0; col < cols; col += 1) {
-          const u = col / (cols - 1);
-          const v = row / (rows - 1);
-          const distance = Math.hypot(u - pointer.x, v - pointer.y);
-          const pulse = Math.max(0, 0.35 - distance) * 58;
-          const wave = Math.sin(u * 8 + frame * 0.012) * Math.sin(v * Math.PI) * 20;
-          line.push({
-            x: rect.width * (0.05 + u * 0.9) + Math.sin(v * 3.4) * 18,
-            y:
-              rect.height * (0.08 + v * 0.82) +
-              wave -
-              pulse * Math.sin(v * Math.PI),
-          });
-        }
-        points.push(line);
-      }
-
-      context.lineWidth = 0.75;
-      context.strokeStyle = lineColor;
-      for (const line of points) {
-        context.beginPath();
-        line.forEach((point, i) =>
-          i ? context.lineTo(point.x, point.y) : context.moveTo(point.x, point.y),
-        );
-        context.stroke();
-      }
-      for (let col = 0; col < cols; col += 1) {
-        context.beginPath();
-        points.forEach((line, i) =>
-          i ? context.lineTo(line[col].x, line[col].y) : context.moveTo(line[col].x, line[col].y),
-        );
-        context.stroke();
-      }
-
-      context.fillStyle = signalColor;
-      points.forEach((line, row) =>
-        line.forEach((point, col) => {
-          if ((row + col) % 11 === 0) {
-            context.beginPath();
-            context.arc(point.x, point.y, 1.8, 0, Math.PI * 2);
-            context.fill();
-          }
-        }),
-      );
-
-      frame += 1;
-      if (!prefersReducedMotion) animation = requestAnimationFrame(draw);
-    };
-
-    const handlePointer = (event: PointerEvent) => {
-      const rect = canvas.getBoundingClientRect();
-      pointer = {
-        x: Math.max(0, Math.min(1, (event.clientX - rect.left) / rect.width)),
-        y: Math.max(0, Math.min(1, (event.clientY - rect.top) / rect.height)),
-      };
-    };
-    if (prefersReducedMotion) {
-      window.addEventListener("resize", draw);
-    } else {
-      canvas.addEventListener("pointermove", handlePointer);
-    }
-    draw();
-    return () => {
-      cancelAnimationFrame(animation);
-      if (prefersReducedMotion) {
-        window.removeEventListener("resize", draw);
-      } else {
-        canvas.removeEventListener("pointermove", handlePointer);
-      }
-    };
-  }, []);
-
-  return <canvas ref={canvasRef} className="hero-field" aria-hidden="true" />;
-}
-
-function ProjectVisual({ type }: { type: string }) {
   return (
-    <div className={`project-visual visual-${type}`} aria-hidden="true">
+    <div className={`project-visual visual-${type}${image ? " has-image" : ""}`} style={style} aria-hidden="true">
       <div className="visual-grid" />
       <div className="visual-object">
         {Array.from({ length: type === "intelligence" ? 24 : 8 }).map((_, index) => (
@@ -364,6 +262,8 @@ function ParametricLab() {
 export default function Home() {
   const [category, setCategory] = useState("All");
   const [activeProject, setActiveProject] = useState<Project | null>(null);
+  const projectTriggerRef = useRef<HTMLButtonElement | null>(null);
+  const drawerRef = useRef<HTMLElement | null>(null);
   const filtered = useMemo(
     () => (category === "All" ? projects : projects.filter((project) => project.category === category)),
     [category],
@@ -379,50 +279,97 @@ export default function Home() {
   }, [category]);
 
   useEffect(() => {
-    document.body.style.overflow = activeProject ? "hidden" : "";
-    const close = (event: KeyboardEvent) => event.key === "Escape" && setActiveProject(null);
-    window.addEventListener("keydown", close);
+    if (!activeProject) return;
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        setActiveProject(null);
+        return;
+      }
+
+      if (event.key !== "Tab") return;
+      const focusable = drawerRef.current?.querySelectorAll<HTMLElement>(
+        'a[href], button:not([disabled]), input:not([disabled]), [tabindex]:not([tabindex="-1"])',
+      );
+      if (!focusable?.length) return;
+
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
     return () => {
-      document.body.style.overflow = "";
-      window.removeEventListener("keydown", close);
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener("keydown", handleKeyDown);
+      projectTriggerRef.current?.focus();
     };
   }, [activeProject]);
 
   return (
-    <main>
+    <>
+      <a className="skip-link" href="#main-content">Skip to content</a>
       <header className="site-header">
-        <a className="brand" href="#top" aria-label="Sunday Emmanuel Ajibade home"><span>✦</span> Sunday Emmanuel Ajibade</a>
-        <div className="header-status"><i /> Civil Engineering · Computational Design</div>
+        <a className="brand" href="#top" aria-label="Sunday Emmanuel Ajibade home">
+          <span className="brand-signal" aria-hidden="true" />
+          <span className="brand-lockup">
+            <span className="brand-signature">Sunday Emmanuel Ajibade</span>
+            <span className="brand-caption">Portfolio / 2026</span>
+          </span>
+        </a>
+        <div className="header-status">
+          <span><i aria-hidden="true" /> Practice</span>
+          <strong>Civil Engineering / Computational Design</strong>
+        </div>
         <nav aria-label="Primary navigation">
-          <a href="#work">Work</a>
-          <a href="#research">Research</a>
-          <a href="#expertise">Expertise</a>
-          <a href="#lab">Lab</a>
-          <a href="#profile">About</a>
+          <a href="#work"><span aria-hidden="true">01</span>Work</a>
+          <a href="#research"><span aria-hidden="true">02</span>Research</a>
+          <a href="#lab"><span aria-hidden="true">03</span>Lab</a>
+          <a href="#expertise"><span aria-hidden="true">04</span>Practice</a>
+          <a href="#profile"><span aria-hidden="true">05</span>About</a>
         </nav>
-        <a className="contact-link" href="mailto:emmanuelajibade751@gmail.com">Contact <span>↗︎</span></a>
+        <a className="contact-link" href="mailto:emmanuelajibade751@gmail.com" aria-label="Email Sunday Emmanuel Ajibade">Contact</a>
       </header>
 
-      <section className="hero" id="top">
+      <main id="main-content">
+      <section
+        className="hero hero--portfolio"
+        id="top"
+        aria-labelledby="hero-title"
+        style={{ "--hero-image": `url("${publicAsset("/research/subtractive-city/pattern-junction.jpg")}")` } as React.CSSProperties}
+      >
         <div className="hero-kicker">
-          <span>Civil Engineering · Structures · Computation · Research</span>
-          <span>Portfolio / 2026</span>
+          <span>Sunday Emmanuel Ajibade</span>
+          <span>2026</span>
         </div>
-        <HeroField />
-        <h1 className="hero-title" aria-label="Design across systems">
-          <div>DESIGN <em>↘︎</em></div>
-          <div>ACROSS SYSTEMS</div>
-        </h1>
+        <div className="hero-media-credit">Featured research / Speculative proposal / Pattern Junction</div>
+        <div className="hero-lockup">
+          <p className="hero-eyebrow">DESIGN ACROSS SYSTEMS</p>
+          <h1 id="hero-title" className="hero-title">Portfolio</h1>
+        </div>
         <div className="hero-bottom">
-          <p>
+          <div className="hero-discipline">
+            <span>Practice</span>
+            <strong>Civil Engineering / Computational Design</strong>
+          </div>
+          <p className="hero-thesis">
             I connect <strong>architectural intent, structural buildability and computational intelligence</strong>—from first sketch to working system.
           </p>
-          <a href="#work" className="round-link" aria-label="Explore selected work">↓</a>
-          <div className="hero-meta"><span>UNIVERSITY OF IBADAN</span><b>IBADAN / NIGERIA</b></div>
+          <a href="#work" className="round-link" aria-label="Explore selected work">View work</a>
+          <div className="hero-meta"><span>Based in</span><b>Ibadan / Nigeria</b></div>
         </div>
       </section>
 
-      <section className="manifesto reveal">
+      <section className="manifesto reveal" aria-labelledby="position-title">
+        <h2 id="position-title" className="sr-only">Position</h2>
         <div className="section-code">[ 00 / POSITION ]</div>
         <p>
           Design across <i>methods,</i>
@@ -434,22 +381,23 @@ export default function Home() {
         <div className="practice-grid" aria-label="Practice areas">
           {practiceAreas.map(([index, title, text, target]) => (
             <button
+              aria-label={`Show ${title} projects`}
               key={title}
               onClick={() => {
                 setCategory(target);
                 document.getElementById("work")?.scrollIntoView({ behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
               }}
             >
-              <span>{index}</span><strong>{title}</strong><small>{text}</small><i>↘︎</i>
+              <span className="practice-index">{index}</span><strong>{title}</strong><small>{text}</small><span className="practice-action" aria-hidden="true">Explore</span>
             </button>
           ))}
         </div>
       </section>
 
-      <section className="work-section" id="work">
+      <section className="work-section" id="work" aria-labelledby="work-title">
         <div className="section-heading reveal">
           <div className="section-code">[ 01 / SELECTED WORK ]</div>
-          <h2>Projects that<br />think in systems.</h2>
+          <h2 id="work-title">Projects that<br />think in systems.</h2>
           <div className="work-count">{String(projects.length).padStart(2, "0")} CASE STUDIES</div>
         </div>
 
@@ -466,32 +414,35 @@ export default function Home() {
           ))}
         </div>
 
-        <div className="project-grid" aria-live="polite">
+        <div className={`project-grid ${category === "All" ? "is-index" : "is-filtered"}`} aria-live="polite">
           {filtered.map((project) => (
             <button
               className={`project-card ${project.size} reveal`}
               key={project.id}
-              onClick={() => setActiveProject(project)}
+              onClick={(event) => {
+                projectTriggerRef.current = event.currentTarget;
+                setActiveProject(project);
+              }}
               aria-label={`Open ${project.title} case study`}
             >
-              <ProjectVisual type={project.visual} />
+              <ProjectVisual type={project.visual} image={project.image} />
               <div className="project-meta">
                 <div><span>{project.index}</span><span>{project.category}</span></div>
                 <h3>{project.title}</h3>
                 <div><span>{project.location}</span><span>{project.year}</span></div>
               </div>
-              <div className="project-open">↗︎</div>
+              <span className="project-open" aria-hidden="true">View case</span>
             </button>
           ))}
         </div>
       </section>
 
-      <section className="research-feature" id="research">
+      <section className="research-feature" id="research" aria-labelledby="research-title">
         <div className="research-mast reveal">
           <div className="section-code">[ 02 / FEATURED RESEARCH ]</div>
           <div className="research-title">
             <span>Reading Lagos</span>
-            <h2>The Subtractive<br /><em>City.</em></h2>
+            <h2 id="research-title">The Subtractive<br /><em>City.</em></h2>
           </div>
           <div className="research-stamp">
             <span>LLL LABORATORY</span>
@@ -500,6 +451,36 @@ export default function Home() {
           </div>
         </div>
 
+        <nav className="research-index reveal" aria-label="Featured research chapters">
+          <a href="#research-thesis"><span>02.1</span>Thesis</a>
+          <a href="#research-evidence"><span>02.2</span>Evidence</a>
+          <a href="#research-propositions"><span>02.3</span>Propositions</a>
+          <a href="#research-credits"><span>02.4</span>Credits</a>
+        </nav>
+
+        <section className="research-chapter research-chapter--thesis" id="research-thesis" aria-labelledby="research-thesis-title">
+          <header className="research-chapter-head reveal">
+            <span>02.1 / THESIS</span>
+            <h3 id="research-thesis-title">The research position.</h3>
+            <p>What the study argues before it moves into evidence and speculation.</p>
+          </header>
+          <div className="research-thesis reveal">
+          <p>“A city is judged by what it has. This one is understood by what has been taken away.”</p>
+          <div>
+            <span>RESEARCH THESIS</span>
+            <p>
+              The study reads Lagos backwards: not as a catalogue of absences, but as a network of conversions. When public guarantees recede, citizens assemble parallel systems for land, movement, value and culture.
+            </p>
+          </div>
+          </div>
+        </section>
+
+        <section className="research-chapter research-chapter--evidence" id="research-evidence" aria-labelledby="research-evidence-title">
+          <header className="research-chapter-head reveal">
+            <span>02.2 / EVIDENCE</span>
+            <h3 id="research-evidence-title">Maps, layers and reference conditions.</h3>
+            <p>The analytical material is presented before any speculative proposition.</p>
+          </header>
         <figure className="research-hero reveal">
           <img
             src={publicAsset("/research/subtractive-city/truckload-urbanism.jpg")}
@@ -512,47 +493,44 @@ export default function Home() {
           <figcaption>
             <span>01 / TERRITORY</span>
             <span>Truckload Urbanism — reading reclamation as a city-scale material system.</span>
-            <a href={publicAsset("/research/subtractive-city/truckload-urbanism.jpg")} target="_blank" rel="noreferrer">View full plate ↗︎</a>
+            <a href={publicAsset("/research/subtractive-city/truckload-urbanism.jpg")} target="_blank" rel="noreferrer" aria-label="View full research plate (opens in a new tab)">View full plate <span className="link-note" aria-hidden="true">New tab</span></a>
           </figcaption>
         </figure>
-
-        <div className="research-thesis reveal">
-          <p>“A city is judged by what it has. This one is understood by what has been taken away.”</p>
-          <div>
-            <span>RESEARCH THESIS</span>
-            <p>
-              The study reads Lagos backwards: not as a catalogue of absences, but as a network of conversions. When public guarantees recede, citizens assemble parallel systems for land, movement, value and culture.
-            </p>
-          </div>
-        </div>
-
         <div className="research-data reveal">
           <div>
             <span className="section-code">THE CITY / 12 LAYERS</span>
-            <h3>Evidence before speculation.</h3>
+            <h4>Evidence before speculation.</h4>
           </div>
           <ol>
             {["Surface water", "Elevation", "Flood exposure", "Population density", "Built volume · FSI", "Ground coverage · GSI", "Building height", "Street density", "Night lights", "Relative wealth", "Urban growth", "The informal city"].map((layer, index) => (
               <li key={layer}><span>{String(index + 1).padStart(2, "0")}</span>{layer}</li>
             ))}
           </ol>
-        </div>
+          </div>
+        </section>
+
+        <section className="research-chapter research-chapter--propositions" id="research-propositions" aria-labelledby="research-propositions-title">
+          <header className="research-chapter-head research-boundary reveal">
+            <span>02.3 / PROPOSITIONS</span>
+            <h3 id="research-propositions-title">Five speculative amplifications.</h3>
+            <p>These images extend observed urban intelligence; they are not presented as built work.</p>
+          </header>
 
         <div className="research-pair reveal">
           <figure>
             <img src={publicAsset("/research/subtractive-city/archipelago-before.jpg")} alt="Existing Lagos lagoon and bridge condition" width="1600" height="1066" loading="lazy" decoding="async" />
-            <figcaption><span>BEFORE</span> The lagoon as dividing line</figcaption>
+            <figcaption><span>REFERENCE CONDITION</span> The lagoon as dividing line</figcaption>
           </figure>
           <figure>
             <img src={publicAsset("/research/subtractive-city/archipelago-after.jpg")} alt="Speculative proposal for an inhabited Lagos archipelago" width="1264" height="843" loading="lazy" decoding="async" />
-            <figcaption><span>AMPLIFIED</span> The Archipelago</figcaption>
+            <figcaption><span>P01 / SPECULATIVE PROPOSITION</span> The Archipelago</figcaption>
           </figure>
         </div>
 
         <div className="research-gallery reveal">
           <div className="research-gallery-intro">
             <span className="section-code">THE NEW LAGOS / AMPLIFICATIONS</span>
-            <h3>Not solutions dropped from above. Existing intelligence, made spatial.</h3>
+            <h4>Not solutions dropped from above. Existing intelligence, made spatial.</h4>
             <p>Five propositions translate the research into civic space across water, learning, exchange and culture.</p>
           </div>
           {[
@@ -563,33 +541,53 @@ export default function Home() {
           ].map(([image, title, caption, width, height], index) => (
             <figure className={`research-gallery-item item-${index + 1}`} key={title}>
               <img src={publicAsset("/research/subtractive-city/" + image)} alt={title + " speculative urban proposal"} width={width} height={height} loading="lazy" decoding="async" />
-              <figcaption><span>{String(index + 1).padStart(2, "0")}</span><b>{title}</b><small>{caption}</small></figcaption>
+              <figcaption><span>P{String(index + 2).padStart(2, "0")}</span><b>{title}</b><small>Speculative proposition / {caption}</small></figcaption>
             </figure>
           ))}
         </div>
+
+        <div
+          className="cinematic-break reveal"
+          style={{ "--cinematic-image": `url("${publicAsset("/research/subtractive-city/transmitter.jpg")}")` } as React.CSSProperties}
+        >
+          <div className="cinematic-kicker">P05 / DETAIL / CULTURE</div>
+          <h4>Make culture<br />urban<br />infra<wbr />structure.</h4>
+          <div className="cinematic-ledger">
+            <span>The Transmitter</span><span>Nollywood / Lagos</span><span>Research amplification / 2026</span>
+          </div>
+          </div>
+        </section>
+
+        <section className="research-chapter research-chapter--credits" id="research-credits" aria-labelledby="research-credits-title">
+          <header className="research-chapter-head reveal">
+            <span>02.4 / CREDITS</span>
+            <h3 id="research-credits-title">Role, publication and source.</h3>
+            <p>Authorship and the link to the complete research remain adjacent to the work.</p>
+          </header>
 
         <div className="research-colophon reveal">
           <div><span>ROLE</span><strong>Co-author · Research · Mapping</strong></div>
           <div><span>PUBLICATION</span><strong>LLL Laboratory / Lex te Loo Architects</strong></div>
           <div><span>TEAM</span><strong>Seven-person international research studio</strong></div>
-          <a href="https://lexteloo.com/think-tank/research/the-subtractive-city" target="_blank" rel="noreferrer">
-            Read the full research <span>↗︎</span>
+          <a href="https://lexteloo.com/think-tank/research/the-subtractive-city" target="_blank" rel="noreferrer" aria-label="Read the full research (opens in a new tab)">
+            Read the full research <span className="link-note" aria-hidden="true">External</span>
           </a>
-        </div>
+          </div>
+        </section>
       </section>
 
-      <section className="lab-section" id="lab">
+      <section className="lab-section" id="lab" aria-labelledby="lab-title">
         <div className="section-heading invert reveal">
           <div className="section-code">[ 03 / SYSTEMS LAB ]</div>
-          <h2>Don’t show the outcome.<br /><em>Show the intelligence.</em></h2>
+          <h2 id="lab-title">Don’t show the outcome.<br /><em>Show the intelligence.</em></h2>
           <p>A live form-finding study. Adjust the structure and watch design intent become measurable.</p>
         </div>
         <ParametricLab />
       </section>
 
-      <section className="capabilities reveal" id="expertise">
-        <div className="section-code">[ 04 / CAPABILITY STACK ]</div>
-        <h2>One practice.<br />Multiple resolutions.</h2>
+      <section className="capabilities reveal" id="expertise" aria-labelledby="practice-title">
+        <div className="section-code">[ 04 / PRACTICE ]</div>
+        <h2 id="practice-title">One practice.<br />Multiple resolutions.</h2>
         <div className="capability-list">
           {[
             ["01", "Architecture", "Spatial strategy, concept design, climate response, visualization"],
@@ -598,16 +596,16 @@ export default function Home() {
             ["04", "AI + Research", "Vibe coding, plugins, workflows, mapping, publications"],
           ].map(([index, title, text]) => (
             <div className="capability-row" key={index}>
-              <span>{index}</span><h3>{title}</h3><p>{text}</p><i>↗︎</i>
+              <span>{index}</span><h3>{title}</h3><p>{text}</p>
             </div>
           ))}
         </div>
       </section>
 
-      <section className="process-section">
+      <section className="process-section" aria-labelledby="method-title">
         <div className="process-top reveal">
-          <div className="section-code">[ 05 / OPERATING SYSTEM ]</div>
-          <p>Every project moves between the physical, the analytical and the imaginable.</p>
+          <div className="section-code">[ 05 / METHOD ]</div>
+          <h2 id="method-title">Every project moves between the physical, the analytical and the imaginable.</h2>
         </div>
         <div className="process-line reveal">
           {[
@@ -622,7 +620,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="profile-section" id="profile">
+      <section className="profile-section" id="profile" aria-labelledby="profile-title">
         <div className="profile-grid reveal">
           <div className="profile-portrait" aria-label="Portrait placeholder ready for your photograph">
             <span>PORTRAIT / DROP IMAGE HERE</span>
@@ -630,7 +628,7 @@ export default function Home() {
           </div>
           <div className="profile-copy">
             <div className="section-code">[ 06 / PROFILE ]</div>
-            <h2>Generalist by range.<br />Specialist by depth.</h2>
+            <h2 id="profile-title">Generalist by range.<br />Specialist by depth.</h2>
             <p className="profile-lead">
               I’m a Civil Engineering student at the University of Ibadan, connecting structural thinking with computational design and urban research.
             </p>
@@ -646,29 +644,32 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="contact-section">
+      </main>
+
+      <footer className="contact-section" aria-labelledby="contact-title">
+        <h2 id="contact-title" className="sr-only">Contact</h2>
         <div className="contact-top"><span>Open to design, structural, computational and research collaborations.</span><span>Ibadan / Nigeria</span></div>
-        <a href="mailto:emmanuelajibade751@gmail.com" className="contact-cta">
-          LET’S WORK <span>↗︎</span>
+        <a href="mailto:emmanuelajibade751@gmail.com" className="contact-cta" aria-label="Email Sunday Emmanuel Ajibade">
+          LET’S WORK <span className="contact-method" aria-hidden="true">Email</span>
         </a>
         <div className="contact-footer">
           <span>© 2026 Sunday Emmanuel Ajibade</span>
           <span>Civil Engineering Student · Computational Designer · Researcher</span>
-          <a href="#top">Back to top ↑</a>
+          <a href="#top">Back to top</a>
         </div>
-      </section>
+      </footer>
 
       {activeProject && (
         <div className="project-overlay" role="dialog" aria-modal="true" aria-labelledby="project-title" onMouseDown={(event) => event.target === event.currentTarget && setActiveProject(null)}>
-          <aside className="project-drawer">
+          <aside className="project-drawer" ref={drawerRef}>
             <button className="drawer-close" onClick={() => setActiveProject(null)} aria-label="Close case study" autoFocus>Close ×</button>
             <div className="drawer-index">CASE STUDY / {activeProject.index}</div>
-            <ProjectVisual type={activeProject.visual} />
+            <ProjectVisual type={activeProject.visual} image={activeProject.image} />
             <div className="drawer-content">
               <div className="drawer-category">{activeProject.category} · {activeProject.year}</div>
               <h2 id="project-title">{activeProject.title}</h2>
               <p>{activeProject.summary}</p>
-              <div className="drawer-impact"><span>MEASURED IMPACT</span><strong>{activeProject.impact}</strong></div>
+              <div className="drawer-impact"><span>OUTPUT / STATUS</span><strong>{activeProject.impact}</strong></div>
               <div className="drawer-tools">
                 {activeProject.tools.map((tool) => <span key={tool}>{tool}</span>)}
               </div>
@@ -677,6 +678,6 @@ export default function Home() {
           </aside>
         </div>
       )}
-    </main>
+    </>
   );
 }

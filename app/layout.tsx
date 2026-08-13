@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Barlow_Condensed, Geist, Geist_Mono } from "next/font/google";
+import { Barlow_Condensed, Geist, Geist_Mono, Parisienne } from "next/font/google";
 import "./globals.css";
 
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
@@ -9,6 +9,14 @@ const barlowCondensed = Barlow_Condensed({
   subsets: ["latin"],
   weight: ["500", "600", "700", "800", "900"],
 });
+const parisienne = Parisienne({
+  variable: "--font-signature",
+  subsets: ["latin"],
+  weight: "400",
+  display: "swap",
+  fallback: ["Segoe Script", "Brush Script MT", "cursive"],
+});
+
 const siteUrl = (
   process.env.NEXT_PUBLIC_SITE_URL ??
   "https://emmanuelajibade751-beep.github.io/portfolio"
@@ -34,13 +42,13 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = {
   colorScheme: "dark",
-  themeColor: "#0b0b0d",
+  themeColor: "#07131b",
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable} ${barlowCondensed.variable}`}>{children}</body>
+      <body className={`${geistSans.variable} ${geistMono.variable} ${barlowCondensed.variable} ${parisienne.variable}`}>{children}</body>
     </html>
   );
 }

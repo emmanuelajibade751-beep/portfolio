@@ -45,7 +45,7 @@ test("server-renders the portfolio identity and metadata", async () => {
   );
   assert.match(
     html,
-    /<meta property="og:image" content="https:\/\/em-built-intelligence\.clever-bream-0221\.chatgpt\.site\/og-v2\.png"\/>/i,
+    /<meta property="og:image" content="https:\/\/emmanuelajibade751-beep\.github\.io\/portfolio\/og-v2\.png"\/>/i,
   );
   assert.match(html, /<meta name="twitter:card" content="summary_large_image"\/>/i);
   assert.match(html, /aria-label="Design across systems"/i);

@@ -2,6 +2,12 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 
+const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
+
+function publicAsset(path: string): string {
+  return basePath + path;
+}
+
 type Project = {
   id: string;
   index: string;
@@ -479,7 +485,7 @@ export default function Home() {
 
         <figure className="research-hero reveal">
           <img
-            src="/research/subtractive-city/truckload-urbanism.jpg"
+            src={publicAsset("/research/subtractive-city/truckload-urbanism.jpg")}
             alt="Satellite mapping study comparing distributed land reclamation across Lagos with Eko Atlantic"
             width="2000"
             height="710"
@@ -489,7 +495,7 @@ export default function Home() {
           <figcaption>
             <span>01 / TERRITORY</span>
             <span>Truckload Urbanism — reading reclamation as a city-scale material system.</span>
-            <a href="/research/subtractive-city/truckload-urbanism.jpg" target="_blank" rel="noreferrer">View full plate ↗︎</a>
+            <a href={publicAsset("/research/subtractive-city/truckload-urbanism.jpg")} target="_blank" rel="noreferrer">View full plate ↗︎</a>
           </figcaption>
         </figure>
 
@@ -517,11 +523,11 @@ export default function Home() {
 
         <div className="research-pair reveal">
           <figure>
-            <img src="/research/subtractive-city/archipelago-before.jpg" alt="Existing Lagos lagoon and bridge condition" width="1600" height="1066" loading="lazy" decoding="async" />
+            <img src={publicAsset("/research/subtractive-city/archipelago-before.jpg")} alt="Existing Lagos lagoon and bridge condition" width="1600" height="1066" loading="lazy" decoding="async" />
             <figcaption><span>BEFORE</span> The lagoon as dividing line</figcaption>
           </figure>
           <figure>
-            <img src="/research/subtractive-city/archipelago-after.jpg" alt="Speculative proposal for an inhabited Lagos archipelago" width="1264" height="843" loading="lazy" decoding="async" />
+            <img src={publicAsset("/research/subtractive-city/archipelago-after.jpg")} alt="Speculative proposal for an inhabited Lagos archipelago" width="1264" height="843" loading="lazy" decoding="async" />
             <figcaption><span>AMPLIFIED</span> The Archipelago</figcaption>
           </figure>
         </div>
@@ -539,7 +545,7 @@ export default function Home() {
             ["transmitter.jpg", "The Transmitter", "Nollywood as urban institution", 1424, 746],
           ].map(([image, title, caption, width, height], index) => (
             <figure className={`research-gallery-item item-${index + 1}`} key={title}>
-              <img src={`/research/subtractive-city/${image}`} alt={`${title} speculative urban proposal`} width={width} height={height} loading="lazy" decoding="async" />
+              <img src={publicAsset("/research/subtractive-city/" + image)} alt={title + " speculative urban proposal"} width={width} height={height} loading="lazy" decoding="async" />
               <figcaption><span>{String(index + 1).padStart(2, "0")}</span><b>{title}</b><small>{caption}</small></figcaption>
             </figure>
           ))}

@@ -321,9 +321,9 @@ export default function Home() {
         <a className="brand" href="#top" aria-label="Sunday Emmanuel Ajibade home">
           <span className="brand-signal" aria-hidden="true" />
           <span className="brand-lockup">
-            <span className="brand-signature" aria-hidden="true">
-              <span className="brand-signature-full">Sunday Emmanuel Ajibade</span>
-              <span className="brand-signature-compact">Sunday E. Ajibade</span>
+            <span className="brand-wordmark" aria-hidden="true">
+              <span className="brand-wordmark-full">Sunday Emmanuel Ajibade</span>
+              <span className="brand-wordmark-compact">Sunday E. Ajibade</span>
             </span>
             <span className="brand-caption">Portfolio / 2026</span>
           </span>

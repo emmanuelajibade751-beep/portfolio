@@ -263,14 +263,14 @@ test("organizes the portfolio as an evidence-led narrative", async () => {
   assert.equal((html.match(/<div class="capability-row"/gi) ?? []).length, 4);
   assert.doesNotMatch(html, /<(?:a|button)[^>]*class="capability-row"/i);
 });
-test("renders the signature identity header", async () => {
+test("renders the architectural identity header", async () => {
   const html = await renderHtml();
   const header = html.match(/<header class="site-header">([\s\S]*?)<\/header>/i);
 
-  assert.ok(header, "signature site header should render");
-  assert.match(header[0], /class="brand-signature"[^>]*aria-hidden="true"/i);
-  assert.match(header[0], /class="brand-signature-full"[^>]*>Sunday Emmanuel Ajibade<\/span>/i);
-  assert.match(header[0], /class="brand-signature-compact"[^>]*>Sunday E\. Ajibade<\/span>/i);
+  assert.ok(header, "architectural site header should render");
+  assert.match(header[0], /class="brand-wordmark"[^>]*aria-hidden="true"/i);
+  assert.match(header[0], /class="brand-wordmark-full"[^>]*>Sunday Emmanuel Ajibade<\/span>/i);
+  assert.match(header[0], /class="brand-wordmark-compact"[^>]*>Sunday E\. Ajibade<\/span>/i);
   assert.match(header[0], /class="brand-caption"[^>]*>Portfolio \/ 2026<\/span>/i);
   assert.match(header[0], /Civil Engineering \/ Computational Design/i);
   assert.equal((header[0].match(/<nav\b/gi) ?? []).length, 1);

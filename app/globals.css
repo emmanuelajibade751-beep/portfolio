@@ -2807,10 +2807,9 @@ body {
     transition: none;
   }
 }
-/* Signed datum header: personal identity within an architectural title-block system. */
+/* Architectural datum header: a compact editorial identity and title-block system. */
 body {
   --header-height: 82px;
-  --signature: var(--font-signature), "Segoe Print", "Bradley Hand", cursive;
 }
 
 html {
@@ -2860,20 +2859,20 @@ section[id] {
   min-width: 0;
 }
 
-.site-header .brand-signature {
+.site-header .brand-wordmark {
   display: block;
   color: var(--paper);
-  font-family: var(--signature);
-  font-size: clamp(1.5rem, 1.55vw, 1.82rem);
-  font-weight: 500;
-  line-height: 0.92;
-  letter-spacing: -0.018em;
+  font-family: var(--display);
+  font-size: clamp(1.25rem, 1.25vw, 1.48rem);
+  font-weight: 600;
+  line-height: 0.95;
+  letter-spacing: 0.025em;
   white-space: nowrap;
   text-shadow: none;
   transition: color 180ms ease, transform 180ms ease;
 }
 
-.site-header .brand-signature-compact {
+.site-header .brand-wordmark-compact {
   display: none;
 }
 
@@ -2888,8 +2887,8 @@ section[id] {
   white-space: nowrap;
 }
 
-.site-header .brand:hover .brand-signature,
-.site-header .brand:focus-visible .brand-signature {
+.site-header .brand:hover .brand-wordmark,
+.site-header .brand:focus-visible .brand-wordmark {
   color: var(--signal);
   transform: translateX(2px);
 }
@@ -3055,11 +3054,11 @@ section[id] {
     height: 30px;
   }
 
-  .site-header .brand-signature {
+  .site-header .brand-wordmark {
     max-width: 100%;
     overflow: visible;
-    font-size: clamp(1.32rem, 6.2vw, 1.56rem);
-    line-height: 1.02;
+    font-size: clamp(1.18rem, 5.3vw, 1.36rem);
+    line-height: 1;
   }
 
   .site-header .brand-caption {
@@ -3101,19 +3100,19 @@ section[id] {
 }
 
 @media (max-width: 480px) {
-  .site-header .brand-signature-full {
+  .site-header .brand-wordmark-full {
     display: none;
   }
 
-  .site-header .brand-signature-compact {
+  .site-header .brand-wordmark-compact {
     display: inline;
   }
 }
 
 @media (max-width: 390px) {
-  .site-header .brand-signature {
-    font-size: clamp(1.08rem, 5vw, 1.24rem);
-    line-height: 1.05;
+  .site-header .brand-wordmark {
+    font-size: clamp(1.02rem, 4.7vw, 1.14rem);
+    line-height: 1;
   }
 
   .site-header .brand-caption {
@@ -3134,7 +3133,7 @@ section[id] {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .site-header .brand-signature,
+  .site-header .brand-wordmark,
   .site-header .brand-signal,
   .site-header nav a,
   .site-header nav a > span,
@@ -3142,8 +3141,8 @@ section[id] {
     transition: none;
   }
 
-  .site-header .brand:hover .brand-signature,
-  .site-header .brand:focus-visible .brand-signature,
+  .site-header .brand:hover .brand-wordmark,
+  .site-header .brand:focus-visible .brand-wordmark,
   .site-header nav a:hover,
   .site-header nav a:focus-visible {
     transform: none;

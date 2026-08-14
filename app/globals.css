@@ -2810,7 +2810,7 @@ body {
 /* Signed datum header: personal identity within an architectural title-block system. */
 body {
   --header-height: 82px;
-  --signature: var(--font-signature), "Segoe Script", "Brush Script MT", cursive;
+  --signature: var(--font-signature), "Segoe Print", "Bradley Hand", cursive;
 }
 
 html {
@@ -2856,7 +2856,7 @@ section[id] {
 
 .site-header .brand-lockup {
   display: grid;
-  gap: 2px;
+  gap: 7px;
   min-width: 0;
 }
 
@@ -2864,13 +2864,17 @@ section[id] {
   display: block;
   color: var(--paper);
   font-family: var(--signature);
-  font-size: clamp(1.72rem, 1.75vw, 2.05rem);
-  font-weight: 400;
-  line-height: 0.86;
-  letter-spacing: 0.005em;
+  font-size: clamp(1.5rem, 1.55vw, 1.82rem);
+  font-weight: 500;
+  line-height: 0.92;
+  letter-spacing: -0.018em;
   white-space: nowrap;
-  text-shadow: 0 3px 18px rgba(0, 0, 0, 0.3);
+  text-shadow: none;
   transition: color 180ms ease, transform 180ms ease;
+}
+
+.site-header .brand-signature-compact {
+  display: none;
 }
 
 .site-header .brand-caption {
@@ -3053,9 +3057,9 @@ section[id] {
 
   .site-header .brand-signature {
     max-width: 100%;
-    overflow: hidden;
-    font-size: clamp(1.45rem, 7vw, 1.78rem);
-    text-overflow: ellipsis;
+    overflow: visible;
+    font-size: clamp(1.32rem, 6.2vw, 1.56rem);
+    line-height: 1.02;
   }
 
   .site-header .brand-caption {
@@ -3096,9 +3100,20 @@ section[id] {
   }
 }
 
+@media (max-width: 480px) {
+  .site-header .brand-signature-full {
+    display: none;
+  }
+
+  .site-header .brand-signature-compact {
+    display: inline;
+  }
+}
+
 @media (max-width: 390px) {
   .site-header .brand-signature {
-    font-size: clamp(1.28rem, 6.4vw, 1.52rem);
+    font-size: clamp(1.08rem, 5vw, 1.24rem);
+    line-height: 1.05;
   }
 
   .site-header .brand-caption {

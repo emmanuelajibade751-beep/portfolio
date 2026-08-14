@@ -268,10 +268,9 @@ test("renders the signature identity header", async () => {
   const header = html.match(/<header class="site-header">([\s\S]*?)<\/header>/i);
 
   assert.ok(header, "signature site header should render");
-  assert.match(
-    header[0],
-    /class="brand-signature"[^>]*>Sunday Emmanuel Ajibade<\/span>/i,
-  );
+  assert.match(header[0], /class="brand-signature"[^>]*aria-hidden="true"/i);
+  assert.match(header[0], /class="brand-signature-full"[^>]*>Sunday Emmanuel Ajibade<\/span>/i);
+  assert.match(header[0], /class="brand-signature-compact"[^>]*>Sunday E\. Ajibade<\/span>/i);
   assert.match(header[0], /class="brand-caption"[^>]*>Portfolio \/ 2026<\/span>/i);
   assert.match(header[0], /Civil Engineering \/ Computational Design/i);
   assert.equal((header[0].match(/<nav\b/gi) ?? []).length, 1);

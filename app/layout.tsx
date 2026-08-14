@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Barlow_Condensed, Geist, Geist_Mono, Parisienne } from "next/font/google";
+import { Barlow_Condensed, Caveat, Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
@@ -9,12 +9,12 @@ const barlowCondensed = Barlow_Condensed({
   subsets: ["latin"],
   weight: ["500", "600", "700", "800", "900"],
 });
-const parisienne = Parisienne({
+const caveat = Caveat({
   variable: "--font-signature",
   subsets: ["latin"],
-  weight: "400",
+  weight: "500",
   display: "swap",
-  fallback: ["Segoe Script", "Brush Script MT", "cursive"],
+  fallback: ["Segoe Print", "Bradley Hand", "cursive"],
 });
 
 const siteUrl = (
@@ -48,7 +48,7 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable} ${barlowCondensed.variable} ${parisienne.variable}`}>{children}</body>
+      <body className={`${geistSans.variable} ${geistMono.variable} ${barlowCondensed.variable} ${caveat.variable}`}>{children}</body>
     </html>
   );
 }

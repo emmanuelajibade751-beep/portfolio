@@ -3148,3 +3148,874 @@ section[id] {
     transform: none;
   }
 }
+/* --------------------------------------------------------------------------
+   Warm-white editorial system — local review theme
+   Ivory is the connective drawing sheet; navy is reserved for evidence plates.
+   -------------------------------------------------------------------------- */
+:root {
+  --paper: #f6f2e8;
+  --paper-raised: #fffdf7;
+  --paper-soft: #ece7da;
+  --paper-ink: #07131b;
+  --paper-muted: #56636a;
+  --paper-line: rgba(7, 19, 27, 0.18);
+  --ink: #07131b;
+  --signal: #f2b13a;
+  --signal-amber: #f2b13a;
+  --signal-on-paper: #7d5200;
+  --line-on-light: rgba(7, 19, 27, 0.18);
+  --line-on-dark: rgba(246, 242, 232, 0.22);
+  --muted-on-light: #56636a;
+  --muted-on-dark: #b6c0c5;
+  --surface: #0c1821;
+  --surface-raised: #13232d;
+  --surface-soft: #1a303b;
+  --canvas-line: rgba(7, 19, 27, 0.38);
+}
+
+html {
+  color-scheme: light;
+  background: var(--paper);
+}
+
+body {
+  --line: var(--line-on-light);
+  --muted: var(--muted-on-light);
+  color: var(--ink);
+  background: var(--paper);
+}
+
+::selection {
+  color: var(--ink);
+  background: var(--signal);
+}
+
+:where(.hero, .research-feature, .cinematic-break, .profile-portrait) {
+  --line: var(--line-on-dark);
+  --muted: var(--muted-on-dark);
+}
+
+:where(.manifesto, .work-section, .lab-section, .capabilities, .process-section, .profile-section, .contact-section, .project-drawer) {
+  --line: var(--line-on-light);
+  --muted: var(--muted-on-light);
+}
+
+.site-header {
+  color: var(--ink);
+  background: rgba(246, 242, 232, 0.92);
+  border-bottom-color: var(--line-on-light);
+  box-shadow: 0 8px 28px rgba(7, 19, 27, 0.08);
+  -webkit-backdrop-filter: blur(12px) saturate(1.04);
+  backdrop-filter: blur(12px) saturate(1.04);
+}
+
+.site-header .brand,
+.site-header .brand-wordmark,
+.site-header .header-status strong,
+.site-header nav a,
+.site-header .contact-link {
+  color: var(--ink);
+}
+
+.site-header .brand-caption,
+.site-header .header-status {
+  color: var(--muted-on-light);
+}
+
+.site-header nav a > span {
+  color: #647178;
+}
+
+.site-header .brand:hover .brand-wordmark,
+.site-header .brand:focus-visible .brand-wordmark {
+  color: var(--ink);
+}
+
+.site-header nav a:hover,
+.site-header nav a:focus-visible {
+  color: var(--ink);
+  background: rgba(7, 19, 27, 0.055);
+  border-color: rgba(125, 82, 0, 0.5);
+}
+
+.site-header nav a:hover > span,
+.site-header nav a:focus-visible > span {
+  color: var(--signal-on-paper);
+}
+
+.site-header .contact-link {
+  border-color: rgba(7, 19, 27, 0.42);
+}
+
+.site-header .contact-link:hover,
+.site-header .contact-link:focus-visible {
+  color: var(--ink);
+  background: var(--signal);
+  border-color: var(--signal-on-paper);
+  box-shadow: 0 8px 22px rgba(7, 19, 27, 0.12);
+}
+
+.site-header a:focus-visible {
+  outline-color: var(--ink);
+  box-shadow: 0 0 0 5px rgba(242, 177, 58, 0.52);
+}
+
+.hero {
+  color: var(--paper);
+  background-color: var(--ink);
+  background-image:
+    linear-gradient(90deg, rgba(4, 11, 16, 0.78) 0%, rgba(5, 13, 18, 0.48) 45%, rgba(4, 11, 16, 0.16) 74%, rgba(4, 11, 16, 0.34) 100%),
+    linear-gradient(0deg, rgba(7, 19, 27, 0.94) 0%, rgba(7, 19, 27, 0.24) 44%, rgba(7, 19, 27, 0.08) 100%),
+    var(--hero-image);
+  background-position: center, center, center 44%;
+  border-color: var(--line-on-dark);
+}
+
+.hero::after {
+  height: 36%;
+  background: linear-gradient(0deg, #07131b 0%, rgba(7, 19, 27, 0.72) 34%, transparent 100%);
+}
+
+.hero--portfolio .hero-title,
+.hero--portfolio .hero-discipline strong,
+.hero--portfolio .hero-meta b {
+  color: var(--paper);
+}
+
+.hero--portfolio .hero-discipline span,
+.hero--portfolio .hero-meta span {
+  color: #d6dee0;
+}
+
+.hero--portfolio .hero-media-credit {
+  color: var(--paper);
+  background: rgba(7, 19, 27, 0.66);
+  border-color: rgba(246, 242, 232, 0.34);
+}
+
+.hero--portfolio .hero-bottom {
+  background: rgba(7, 19, 27, 0.7);
+  border-color: rgba(246, 242, 232, 0.28);
+}
+
+.hero--portfolio .round-link {
+  color: var(--paper);
+  background: rgba(7, 19, 27, 0.74);
+  border-color: rgba(246, 242, 232, 0.78);
+}
+
+.section-code,
+.work-count,
+.practice-index,
+.practice-action,
+.project-meta > div:first-child span:first-child,
+.capability-row > span,
+.profile-copy .section-code,
+.profile-facts span,
+.lab-readout,
+.lab-controls label b {
+  color: var(--signal-on-paper);
+}
+
+.manifesto {
+  color: var(--ink);
+  background:
+    linear-gradient(180deg, rgba(7, 19, 27, 0.028), transparent 24%),
+    var(--paper);
+  border-color: var(--line-on-light);
+  padding-block: clamp(112px, 10vw, 168px);
+}
+
+.manifesto > p {
+  color: var(--ink);
+  text-transform: none;
+}
+
+.manifesto > p i,
+.manifesto-side,
+.practice-grid small {
+  color: var(--muted-on-light);
+}
+
+.manifesto > p em {
+  color: var(--signal-on-paper);
+}
+
+.practice-grid {
+  border-color: rgba(7, 19, 27, 0.62);
+}
+
+.practice-grid button {
+  color: var(--ink);
+  background: rgba(255, 253, 247, 0.44);
+  border-color: var(--line-on-light);
+}
+
+.practice-grid button:hover,
+.practice-grid button:focus-visible {
+  color: var(--paper);
+  background: var(--ink);
+  box-shadow: inset 0 3px 0 var(--signal);
+}
+
+.practice-grid button:hover :where(.practice-index, .practice-action),
+.practice-grid button:focus-visible :where(.practice-index, .practice-action) {
+  color: var(--signal);
+}
+
+.practice-grid button:hover small,
+.practice-grid button:focus-visible small {
+  color: var(--muted-on-dark);
+}
+
+.work-section {
+  color: var(--ink);
+  background:
+    linear-gradient(180deg, rgba(7, 19, 27, 0.022), transparent 18%),
+    var(--paper-raised);
+  border-block: 1px solid var(--line-on-light);
+  padding-block: clamp(128px, 10vw, 176px);
+}
+
+.work-section::before {
+  background: var(--signal);
+}
+
+.section-heading h2,
+.capabilities > h2,
+.process-top h2 {
+  color: var(--ink);
+  text-transform: none;
+}
+
+.section-heading .work-count {
+  color: var(--signal-on-paper);
+  border-color: rgba(7, 19, 27, 0.62);
+}
+
+.filters {
+  border-color: var(--line-on-light);
+}
+
+.filters button {
+  color: var(--muted-on-light);
+  border-color: var(--line-on-light);
+}
+
+.filters button:hover {
+  color: var(--ink);
+  background: var(--paper-soft);
+}
+
+.filters button.active {
+  color: var(--paper);
+  background: var(--ink);
+  box-shadow: inset 0 -2px 0 var(--signal);
+}
+
+.project-grid {
+  gap: clamp(68px, 6vw, 94px) clamp(18px, 2vw, 30px);
+}
+
+.project-card,
+.project-meta h3 {
+  color: var(--ink);
+}
+
+.project-meta > div {
+  color: var(--muted-on-light);
+}
+
+.project-card:hover h3,
+.project-card:focus-visible h3 {
+  color: var(--signal-on-paper);
+}
+
+.project-visual,
+.visual-canopy,
+.visual-intelligence,
+.visual-fabric,
+.visual-shell,
+.visual-heat {
+  background-color: var(--paper-soft);
+  border-color: var(--line-on-light);
+  box-shadow: 0 18px 44px rgba(7, 19, 27, 0.11);
+}
+
+.visual-bridge {
+  color: var(--paper);
+  background-color: var(--ink);
+  border-color: rgba(246, 242, 232, 0.24);
+}
+
+.project-visual:not(.has-image)::after {
+  background: linear-gradient(0deg, rgba(7, 19, 27, 0.08), transparent);
+}
+
+.project-card .project-open {
+  color: var(--paper);
+  background: rgba(7, 19, 27, 0.9);
+  border-color: rgba(246, 242, 232, 0.58);
+}
+
+.project-card:hover .project-open,
+.project-card:focus-visible .project-open {
+  color: var(--ink);
+  background: var(--signal);
+  border-color: var(--signal-on-paper);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .project-card:hover .project-visual {
+    border-color: rgba(125, 82, 0, 0.56);
+    box-shadow: 0 26px 58px rgba(7, 19, 27, 0.16);
+  }
+}
+
+.research-feature {
+  --line: var(--line-on-dark);
+  --muted: var(--muted-on-dark);
+  --research-line: var(--line-on-dark);
+  color: var(--paper);
+  background:
+    linear-gradient(160deg, rgba(216, 225, 226, 0.035), transparent 24%),
+    var(--surface);
+}
+
+.research-feature :where(.section-code, .research-title > span, .research-thesis > div > span, .research-data li span, .research-gallery-item figcaption span, .research-colophon div span, .research-chapter-head > span),
+.cinematic-kicker {
+  color: var(--signal);
+}
+
+.research-feature :where(.research-chapter-head h3, .research-gallery-item figcaption b) {
+  color: var(--paper);
+}
+
+.research-feature :where(.research-chapter-head p, .research-thesis > div p, .research-gallery-intro p, .research-gallery-item figcaption small) {
+  color: var(--muted-on-dark);
+}
+
+.research-index {
+  top: var(--header-height);
+  color: var(--paper);
+  background: rgba(7, 19, 27, 0.92);
+  border-color: var(--line-on-dark);
+}
+
+.research-colophon > a {
+  color: var(--ink);
+  background: var(--paper-raised);
+  border-top: 2px solid var(--signal);
+}
+
+.research-colophon > a:hover,
+.research-colophon > a:focus-visible {
+  color: var(--ink);
+  background: var(--signal);
+}
+
+.lab-section {
+  color: var(--ink);
+  background:
+    linear-gradient(180deg, rgba(7, 19, 27, 0.026), transparent 30%),
+    var(--paper);
+  border-color: var(--line-on-light);
+  padding-block: clamp(124px, 9vw, 164px) clamp(72px, 6vw, 104px);
+}
+
+.lab-section .section-heading.invert h2,
+.lab-section .section-heading.invert > p {
+  color: var(--ink);
+}
+
+.lab-section .section-heading.invert h2 em,
+.lab-section .section-code {
+  color: var(--signal-on-paper);
+}
+
+.lab-panel {
+  color: var(--ink);
+  background: var(--paper-raised);
+  border-color: rgba(7, 19, 27, 0.42);
+  box-shadow: 0 24px 64px rgba(7, 19, 27, 0.1);
+}
+
+.lab-canvas-wrap {
+  background-color: var(--paper-raised);
+  background-image:
+    linear-gradient(rgba(7, 19, 27, 0.085) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(7, 19, 27, 0.085) 1px, transparent 1px);
+}
+
+.lab-controls {
+  color: var(--ink);
+  border-color: rgba(7, 19, 27, 0.3);
+}
+
+.lab-controls label {
+  border-color: var(--line-on-light);
+}
+
+.lab-stamp,
+.lab-controls > p {
+  color: var(--muted-on-light);
+}
+
+.lab-controls input[type="range"] {
+  background:
+    linear-gradient(
+      transparent 21px,
+      rgba(7, 19, 27, 0.48) 21px,
+      rgba(7, 19, 27, 0.48) 22px,
+      transparent 22px
+    );
+}
+
+.lab-controls input[type="range"]::-webkit-slider-thumb {
+  border-color: var(--paper-raised);
+  background: var(--signal);
+  box-shadow: 0 0 0 1px var(--signal-on-paper);
+}
+
+.lab-controls input[type="range"]::-moz-range-thumb {
+  border-color: var(--paper-raised);
+  background: var(--signal);
+  box-shadow: 0 0 0 1px var(--signal-on-paper);
+}
+
+.lab-metrics {
+  background: var(--line-on-light);
+}
+
+.lab-metrics div {
+  color: var(--paper);
+  background: var(--ink);
+}
+
+.lab-metrics strong {
+  color: var(--signal);
+}
+
+.capabilities {
+  color: var(--ink);
+  background: var(--paper-soft);
+  padding-block: clamp(128px, 10vw, 176px);
+}
+
+.capability-list,
+.capability-row {
+  border-color: var(--line-on-light);
+}
+
+.capability-row h3 {
+  color: var(--ink);
+}
+
+.capability-row p {
+  color: var(--muted-on-light);
+}
+
+.capability-row,
+.capability-row:hover,
+.capability-row:focus-within {
+  background: transparent;
+  box-shadow: none;
+}
+
+.process-section {
+  color: var(--ink);
+  background:
+    linear-gradient(90deg, rgba(7, 19, 27, 0.022), transparent 38%),
+    var(--paper-raised);
+  border-color: var(--line-on-light);
+  padding-block: clamp(104px, 8vw, 148px) clamp(132px, 10vw, 184px);
+}
+
+.process-line,
+.process-line > div {
+  border-color: var(--line-on-light);
+}
+
+.process-line h3 {
+  color: var(--ink);
+}
+
+.process-line p {
+  color: var(--muted-on-light);
+}
+
+.profile-section {
+  color: var(--ink);
+  background: var(--paper);
+  padding-block: clamp(72px, 7vw, 112px) clamp(128px, 10vw, 176px);
+}
+
+.profile-grid {
+  border-color: rgba(7, 19, 27, 0.38);
+  box-shadow: 0 24px 64px rgba(7, 19, 27, 0.1);
+}
+
+.profile-portrait {
+  color: var(--paper);
+  background:
+    radial-gradient(circle at 58% 26%, rgba(216, 225, 226, 0.08), transparent 28%),
+    var(--surface);
+}
+
+.profile-copy {
+  color: var(--ink);
+  background: var(--paper-raised);
+}
+
+.profile-copy > p {
+  color: #38474e;
+}
+
+.profile-facts {
+  border-color: var(--line-on-light);
+}
+
+.contact-section {
+  color: var(--ink);
+  background: var(--paper-soft);
+  border-top: 1px solid var(--line-on-light);
+}
+
+.contact-top,
+.contact-footer {
+  color: var(--muted-on-light);
+}
+
+.contact-cta {
+  color: var(--ink);
+  border-color: var(--ink);
+  border-radius: var(--radius-md);
+  transition: color 220ms ease, background 220ms ease, padding 220ms ease;
+}
+
+.contact-cta:hover,
+.contact-cta:focus-visible {
+  color: var(--paper);
+  background: var(--ink);
+  padding-inline: clamp(14px, 2vw, 28px);
+}
+
+.contact-cta .contact-method {
+  color: var(--ink);
+  background: var(--signal);
+  border: 1px solid var(--signal-on-paper);
+  border-radius: var(--radius-pill);
+  padding: 9px 12px;
+}
+
+.contact-section :where(a, button, input):focus-visible {
+  outline-color: currentColor;
+  box-shadow: 0 0 0 5px rgba(242, 177, 58, 0.56);
+}
+
+.project-overlay {
+  background: rgba(7, 19, 27, 0.76);
+}
+
+.project-drawer,
+.drawer-close {
+  color: var(--ink);
+  background: var(--paper-raised);
+}
+
+.drawer-close {
+  border-color: var(--ink);
+}
+
+.drawer-close:hover,
+.drawer-close:focus-visible {
+  color: var(--ink);
+  background: var(--signal);
+}
+
+.drawer-category {
+  color: var(--signal-on-paper);
+}
+
+.drawer-impact,
+.drawer-tools span {
+  border-color: var(--line-on-light);
+}
+
+.skip-link {
+  border: 2px solid var(--ink);
+  box-shadow: 0 4px 16px rgba(7, 19, 27, 0.18);
+}
+
+@media (max-width: 760px) {
+  .site-header nav {
+    border-top-color: var(--line-on-light);
+  }
+}
+
+@media (max-width: 680px) {
+  .hero {
+    background-position: center, center, 58% center;
+  }
+
+  .hero::after {
+    height: 40%;
+  }
+
+  .manifesto,
+  .work-section,
+  .lab-section,
+  .capabilities,
+  .process-section,
+  .profile-section {
+    padding-block: 88px;
+  }
+
+  .project-grid {
+    gap-block: 68px;
+  }
+
+  .research-index {
+    top: var(--header-height);
+  }
+
+  .contact-section {
+    min-height: 68vh;
+  }
+}
+
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .site-header {
+    background: rgba(246, 242, 232, 0.98);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .project-card:hover .visual-object,
+  .project-card:focus-visible .visual-object,
+  .research-gallery-item:hover img,
+  .research-gallery-item:focus-within img {
+    transform: none;
+  }
+
+  .contact-cta:hover,
+  .contact-cta:focus-visible {
+    padding-inline: 0;
+  }
+}
+
+/* Pure black / pure white material refinement. */
+:root {
+  --paper: #ffffff;
+  --paper-raised: #ffffff;
+  --paper-soft: #ffffff;
+  --paper-ink: #000000;
+  --paper-muted: #505050;
+  --paper-line: rgba(0, 0, 0, 0.18);
+  --ink: #000000;
+  --line-on-light: rgba(0, 0, 0, 0.18);
+  --line-on-dark: rgba(255, 255, 255, 0.24);
+  --muted-on-light: #505050;
+  --muted-on-dark: #c4c4c4;
+  --surface: #000000;
+  --surface-raised: #000000;
+  --surface-soft: #000000;
+  --canvas-line: rgba(0, 0, 0, 0.42);
+}
+
+html,
+body {
+  color: #000000;
+  background: #ffffff;
+}
+
+.site-header {
+  color: #000000;
+  background: #ffffff;
+  border-bottom-color: rgba(0, 0, 0, 0.2);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.08);
+}
+
+.site-header :where(.brand, .brand-wordmark, .header-status strong, nav a, .contact-link) {
+  color: #000000;
+}
+
+.site-header :where(.brand-caption, .header-status) {
+  color: #505050;
+}
+
+.site-header nav a > span {
+  color: #5d5d5d;
+}
+
+.site-header nav a:hover,
+.site-header nav a:focus-visible {
+  color: #000000;
+  background: rgba(0, 0, 0, 0.055);
+}
+
+.hero {
+  color: #ffffff;
+  background-color: #000000;
+  background-image:
+    linear-gradient(90deg, rgba(0, 0, 0, 0.78) 0%, rgba(0, 0, 0, 0.48) 45%, rgba(0, 0, 0, 0.16) 74%, rgba(0, 0, 0, 0.34) 100%),
+    linear-gradient(0deg, rgba(0, 0, 0, 0.94) 0%, rgba(0, 0, 0, 0.24) 44%, rgba(0, 0, 0, 0.08) 100%),
+    var(--hero-image);
+}
+
+.hero::after {
+  background: linear-gradient(0deg, #000000 0%, rgba(0, 0, 0, 0.72) 34%, transparent 100%);
+}
+
+.hero--portfolio .hero-media-credit,
+.hero--portfolio .hero-bottom,
+.hero--portfolio .round-link {
+  background-color: rgba(0, 0, 0, 0.72);
+}
+
+.hero--portfolio .hero-discipline span,
+.hero--portfolio .hero-meta span {
+  color: #dedede;
+}
+
+.manifesto,
+.work-section,
+.lab-section,
+.capabilities,
+.process-section,
+.profile-section,
+.contact-section,
+.project-drawer,
+.profile-copy {
+  color: #000000;
+  background: #ffffff;
+}
+
+.practice-grid button {
+  color: #000000;
+  background: #ffffff;
+}
+
+.practice-grid button:hover,
+.practice-grid button:focus-visible {
+  color: #ffffff;
+  background: #000000;
+}
+
+.filters button:hover {
+  color: #000000;
+  background: #ffffff;
+}
+
+.filters button.active {
+  color: #ffffff;
+  background: #000000;
+}
+
+.project-visual,
+.visual-canopy,
+.visual-intelligence,
+.visual-fabric,
+.visual-shell,
+.visual-heat {
+  background-color: #ffffff;
+  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.11);
+}
+
+.visual-bridge {
+  color: #ffffff;
+  background-color: #000000;
+}
+
+.project-card .project-open {
+  color: #ffffff;
+  background: rgba(0, 0, 0, 0.9);
+}
+
+.research-feature {
+  color: #ffffff;
+  background: #000000;
+}
+
+.research-index {
+  color: #ffffff;
+  background: #000000;
+}
+
+.research-hero,
+.research-pair figure {
+  background: #000000;
+}
+
+.cinematic-break {
+  color: #ffffff;
+  background: #000000;
+}
+
+.cinematic-break::after {
+  background:
+    linear-gradient(90deg, rgba(0, 0, 0, 0.94) 0%, rgba(0, 0, 0, 0.62) 37%, rgba(0, 0, 0, 0.08) 72%),
+    linear-gradient(0deg, rgba(0, 0, 0, 0.9) 0%, transparent 42%);
+}
+
+.lab-panel,
+.lab-canvas-wrap {
+  color: #000000;
+  background-color: #ffffff;
+}
+
+.lab-canvas-wrap {
+  background-image:
+    linear-gradient(rgba(0, 0, 0, 0.085) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 0, 0, 0.085) 1px, transparent 1px);
+}
+
+.lab-metrics div {
+  color: #ffffff;
+  background: #000000;
+}
+
+.profile-portrait {
+  color: #ffffff;
+  background:
+    radial-gradient(circle at 58% 26%, rgba(255, 255, 255, 0.08), transparent 28%),
+    #000000;
+}
+
+.contact-cta:hover,
+.contact-cta:focus-visible {
+  color: #ffffff;
+  background: #000000;
+}
+
+.project-overlay {
+  background: rgba(0, 0, 0, 0.78);
+}
+
+.drawer-close {
+  color: #000000;
+  background: #ffffff;
+}
+
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .site-header {
+    background: #ffffff;
+  }
+}
+
+/* Accessible amber/text specificity on pure-white surfaces. */
+.site-header .brand .brand-lockup,
+.site-header .brand .brand-wordmark,
+.site-header .brand .brand-wordmark span {
+  color: #000000;
+}
+
+.practice-grid .practice-index,
+.practice-grid .practice-action {
+  color: var(--signal-on-paper);
+}
+
+.practice-grid button:hover :where(.practice-index, .practice-action),
+.practice-grid button:focus-visible :where(.practice-index, .practice-action) {
+  color: var(--signal);
+}

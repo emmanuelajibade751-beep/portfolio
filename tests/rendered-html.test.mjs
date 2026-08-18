@@ -180,7 +180,7 @@ test("renders the focused portfolio-word hero", async () => {
     "Civil Engineering / Computational Design",
     "Ibadan / Nigeria",
     "2026",
-    "Featured research / Speculative proposal / Pattern Junction",
+    "Market study / Rhino model / Perspective viewport",
   ]) {
     assert.match(
       heroHtml,
@@ -193,8 +193,13 @@ test("renders the focused portfolio-word hero", async () => {
   );
   assert.match(
     heroHtml,
-    /--hero-image[^"]*\/research\/subtractive-city\/pattern-junction\.jpg/i,
+    /--hero-image[^"]*\/projects\/market-rhino-model\.png/i,
   );
+  const marketHeroAsset = await stat(
+    new URL("../public/projects/market-rhino-model.png", import.meta.url),
+  );
+  assert.ok(marketHeroAsset.isFile(), "Market hero asset should be a file");
+  assert.ok(marketHeroAsset.size > 0, "Market hero asset should not be empty");
   assert.doesNotMatch(
     heroHtml,
     /hero--operating-field|hero-operating-field|field-register|MODEL \/ 01|ARCHITECTURAL MASS|LOAD PATH \/ S-02|PARAMETRIC FIELD \/ CONTROL NODES|RESEARCH \/ CONTOUR|DATUM \/ 00|<canvas/i,

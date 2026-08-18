@@ -347,13 +347,13 @@ export default function Home() {
         className="hero hero--portfolio"
         id="top"
         aria-labelledby="hero-title"
-        style={{ "--hero-image": `url("${publicAsset("/research/subtractive-city/pattern-junction.jpg")}")` } as React.CSSProperties}
+        style={{ "--hero-image": `url("${publicAsset("/projects/market-rhino-model.png")}")` } as React.CSSProperties}
       >
         <div className="hero-kicker">
           <span>Sunday Emmanuel Ajibade</span>
           <span>2026</span>
         </div>
-        <div className="hero-media-credit">Featured research / Speculative proposal / Pattern Junction</div>
+        <div className="hero-media-credit">Market study / Rhino model / Perspective viewport</div>
         <div className="hero-lockup">
           <p className="hero-eyebrow">DESIGN ACROSS SYSTEMS</p>
           <h1 id="hero-title" className="hero-title">Portfolio</h1>
